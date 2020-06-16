@@ -1,63 +1,14 @@
-<style>
-    div.comboContainer {
-        text-align: left;
-        width: fit-content;
-    }
-
-    input.comboInput {
-        text-align: left;
-        cursor: default;
-    }
-
-    div.comboDropDown {
-        position: absolute;
-        visibility: hidden;
-        padding: 7px;
-
-        border: 1px solid {
-                {
-                css.borderColor
-            }
-        }
-
-        ;
-        border-radius: 4px;
-        max-height: 200px;
-        overflow-x: hidden;
-        overflow-y: auto;
-        z-index: 900;
-
-        background-color: {
-                {
-                css.backgroundColor
-            }
-        }
-
-        ;
-    }
-
-    div.comboDropDownItem {
-        padding: 3px;
-        cursor: pointer;
-    }
-
-    span.comboArrow {
-        cursor: pointer;
-        margin-left: -20px;
-    }
-</style>
-
-<div class="comboContainer" id="{{id}}_control" data-bkgd-color="{{css.backgroundColor}}" data-bkgd-color-hover="{{css.backgroundColorHover}}">
+<div class="form-drop-down-container" id="{{id}}_control" data-bkgd-color="{{css.backgroundColor}}" data-bkgd-color-hover="{{css.backgroundColorHover}}">
     <div>
         <input id="{{id}}" name="{{id}}" type="hidden" value="{{value}}" />
-        <input id="{{id}}_input" class="comboInput {{css.input}}" placeholder="{{placeHolder}}" type="text" />
-        <span id="{{id}}_arrow" class="comboArrow">
+        <input id="{{id}}_input" class="form-drop-down-input {{css.input}}" placeholder="{{placeHolder}}" type="text" />
+        <span id="{{id}}_arrow" class="form-drop-down-arrow">
             ▼
         </span>
     </div>
-    <div id="{{id}}_dropDown" class="comboDropDown">
+    <div id="{{id}}_dropDown" class="form-drop-down">
         {{#each items}}
-        <div data-value="{{this.value}}" class="comboDropDownItem">{{this.text}}</div>
+        <div data-value="{{this.value}}" class="form-drop-down-item">{{this.text}}</div>
         {{/each}}
     </div>
 </div>

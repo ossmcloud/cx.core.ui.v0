@@ -1,6 +1,7 @@
 'use strict'
 
 const _fs = require('fs');
+const _path = require('path');
 const _h = require('handlebars');
 
 function _render(options) {
@@ -14,7 +15,17 @@ function _render(options) {
         }
     });
     options.items = items;
-    var hTmpl = _h.compile(_fs.readFileSync('src/sdk/ui/comboInput/comboInput.hbs', 'utf8'));
+
+    if (!options.css) {
+        options.css = {
+            input: 'btn',
+            borderColor: 'var(--element-bd-color)',
+            backgroundColor: 'var(--element-bg-color)',
+            backgroundColorHover: 'var(--header-bg-color)',
+        };
+    }
+
+    var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'dropDown.hbs'), 'utf8'));
     return hTmpl(options);
 }
 
