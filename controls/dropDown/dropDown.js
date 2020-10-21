@@ -25,6 +25,8 @@ function _render(options) {
         };
     }
 
+    if (!options.width) { options.width = '250px'; }
+
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'dropDown.hbs'), 'utf8'));
     return hTmpl(options);
 }
