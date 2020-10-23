@@ -31,6 +31,11 @@ function _render(record, options) {
         html += '<input class="btn form-inline" type="button" value="Edit" onclick="document.location.href=\'' + options.path + '?id=' + recId + '&e=T\';" />';
     }
     html += '<input class="btn form-inline" type="button" value="Back" onclick="window.history.back();" />';
+    if (options.listPath) {
+        html += '<div style="float: right; padding-left: 17px;">';
+        html += '<a href=' + options.listPath + '>list</a>';
+        html += '</div>';
+    }
     html += '</div>';
 
     options.columns.forEach(c => {

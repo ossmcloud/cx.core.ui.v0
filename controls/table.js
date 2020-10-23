@@ -16,15 +16,23 @@ function getColumns(objects, options) {
 }
 
 function renderActions(objects, options) {
-    var actionPanel = '<div style="padding-bottom: 7px;">';
+    var actionPanel = '<div style="padding-bottom: 7px;"><div style="display: table-cell;">';
     if (options.allowNew) {
         var link = options.path + '?e=T';
         if (options.allowNew.query) { link += '&' + options.allowNew.query; }
-        actionPanel += '<input type="button" class="btn" value="new record" onclick="document.location.href=\'' + link + '\'" />';
+        actionPanel += '<input type="button" class="btn" value="new ' + options.name + '" onclick="document.location.href=\'' + link + '\'" />';
     }
     if (options.filters) {
         actionPanel += '<input type="button" class="btn" value="Refresh" onclick="document.location.reload()" />';
     }
+    actionPanel += '</div>';
+
+    if (options.quickSearch) {
+        actionPanel += '<div style="display: table-cell; width: 100%; text-align: right;">';
+        actionPanel += '<input id="' + options.tableId + '_search" class="form-control" style="display: inline-block;" type="text" placeholder="quick search..." >';
+        actionPanel += '</div>';
+    }
+    
     actionPanel += '</div>';
     return actionPanel;
 }
