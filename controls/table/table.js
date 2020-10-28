@@ -4,7 +4,6 @@ const _fs = require('fs');
 const _path = require('path');
 const _h = require('handlebars');
 const _core = require('cx-core');
-const { title } = require('process');
 
 class TableColumn {
     #o = null;
@@ -34,7 +33,9 @@ class TableColumn {
         var val = object[this.name];
         if (val === null) { val = '[NULL]'; }
         if (val === undefined) { val = '[UNKNOWN]'; }
-        if (val.constructor.name === 'Date') { val = _core.date.format({ date: val, inverted: true }); }
+        if (val.constructor.name === 'Date') {
+            val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
+        }
         return val;
     }
 }

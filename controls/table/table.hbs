@@ -1,31 +1,31 @@
-<div id="{{id}}_outer_container" class="table-outer-container {{fixHeadClassNoBorder}}">
-    <div id="{{id}}_title_container" class="table-title-outer-container">
-        <div id="{{id}}_title_container" class="table-title-container">
+<div data-cx-control="table" id="{{tableId}}_outer_container" class="table-outer-container {{fixHeadClassNoBorder}}">
+    <div id="{{tableId}}_title_container" class="table-title-outer-container">
+        <div id="{{tableId}}_title_container" class="table-title-container">
             {{{title}}}
             {{#if allowNew}}
-                <input type="button" id="{{id}}_record_new" class="btn form-inline" style="margin-left: 17px;"; value="new record" />
+                <input type="button" id="{{tableId}}_record_new" class="btn form-inline" style="margin-left: 17px;"; value="new record" />
             {{/if}}
         </div>
-        <div id="{{id}}_count_container" class="table-count-container">
+        <div id="{{tableId}}_count_container" class="table-count-container">
             {{count}} item(s)
         </div>
-        <div id="{{id}}_search_container" class="table-search-container">
-            <input id="{{id}}_search" class="form-control table-quick-search" style="display: inline-block;" type="text" placeholder="quick search...">
+        <div id="{{tableId}}_search_container" class="table-search-container">
+            <input id="{{tableId}}_search" class="form-control table-quick-search" style="display: inline-block;" type="text" placeholder="quick search...">
         </div>
     </div>
     {{#if filters}}
-        <div id="{{id}}_filter_outer_container" class="table-filter-outer-container">
-            <div id="{{id}}_filter_container" class="table-filter-container">
+        <div id="{{tableId}}_filter_outer_container" class="table-filter-outer-container">
+            <div id="{{tableId}}_filter_container" class="table-filter-container">
                 {{{filters}}}            
             </div>
-            <div id="{{id}}_filter_action_container" class="table-filter-action-container">
-                <input type="button" id="{{id}}_filter_refresh" class="btn form-inline" value="refresh" />
-                <input type="button" id="{{id}}_filter_clear" class="btn form-inline" value="clear" />
+            <div id="{{tableId}}_filter_action_container" class="table-filter-action-container">
+                <input type="button" id="{{tableId}}_filter_refresh" class="btn form-inline" value="refresh" />
+                <input type="button" id="{{tableId}}_filter_clear" class="btn form-inline" value="clear" />
             </div>
         </div>
     {{/if}}
     {{{content}}}
-    <div id="{{id}}_table_container" class="table-container {{fixHeadClass}}">
+    <div id="{{tableId}}_table_container" class="table-container {{fixHeadClass}}">
         {{{table}}}
     </div>
 </div>
