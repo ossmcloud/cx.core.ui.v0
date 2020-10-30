@@ -15,7 +15,7 @@ class TableColumn {
         if (!options) { options = {}; }
         this.#o = options;
         this.#name = options.name || options;
-        this.#title = options.title || this.#name;
+        this.#title = options.title || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
     }

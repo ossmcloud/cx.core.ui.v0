@@ -1,1 +1,5 @@
-<input name="{{id}}" class="form-control" style="width: {{width}};" type="date" value="{{value}}" />
+{{#if readOnly}}
+    <span name="{{id}}" class="inlineText" style="width: {{width}};">{{value}}</span>
+{{else}}
+    <input name="{{id}}" class="form-control" style="width: {{width}};" type="date" value="{{value}}" />
+{{/if}}
