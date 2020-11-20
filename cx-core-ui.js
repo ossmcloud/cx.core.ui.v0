@@ -15,10 +15,15 @@ module.exports = {
 
         Type: _declarations.InputType,
 
+        render: function (options) {
+            
+        },
+
         input: function (options) {
             if (!options.width) { options.width = 'auto'; }
             if (options.inline === true) { options.inline = 'form-input-inline'; }
             if (!options.id) { options.id = options.name; }
+            if (!options.name) { options.name = options.id; }
 
             if (options.inputType == _declarations.InputType.SELECT) {
                 options.inputControl = _dropDown.render(options);
@@ -37,7 +42,6 @@ module.exports = {
             return this.input(options);
         },
         dropDown: function (options) {
-           // return _dropDown.render(options);
             options.inputType = _declarations.InputType.SELECT;
             return this.input(options);
         },

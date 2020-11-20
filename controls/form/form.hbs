@@ -1,22 +1,25 @@
-<h1 class="p_title">{{formTitle}}</h1>
-{{#if edit}}
-<form id="{{id}}_form" method="{{formMethod}}" action="{{formAction}}">
-{{/if}}
-    <input name="accountId" type="hidden" value="{{accountId}}">
-    <input name="recordId" type="hidden" value="{{recordId}}">
-    <input name="rowVersion" type="hidden" value="{{rowVersion}}">
-    <div class="form-action-panel">
-        {{#if edit}}
-            <input class="btn form-inline" type="submit" value="Save">
-        {{else}}
-            {{#if allowEdit}}
-                <input class="btn form-inline" type="button" value="Edit" onclick="document.location.href='/{{path}}?id={{recordId}}&e=T';" />
+
+<div data-cx-control="form" id="{{id}}_form_container" class="form-outer-container {{cssClass}}">
+    <h1 class="p_title">{{formTitle}}</h1>
+    {{#if edit}}
+    <form id="{{id}}_form" method="{{formMethod}}" action="{{formAction}}">
+    {{/if}}
+        <input name="accountId" type="hidden" value="{{accountId}}">
+        <input name="recordId" type="hidden" value="{{recordId}}">
+        <input name="rowVersion" type="hidden" value="{{rowVersion}}">
+        <div class="form-action-panel">
+            {{#if edit}}
+                <input class="btn form-inline" type="submit" value="Save">
+            {{else}}
+                {{#if allowEdit}}
+                    <input class="btn form-inline" type="button" value="Edit" onclick="document.location.href='/{{path}}?id={{recordId}}&e=T';" />
+                {{/if}}
             {{/if}}
-        {{/if}}
-        <input class="btn form-inline" type="button" value="Back" onclick="window.history.back();">
-        <div style="float: right; padding-left: 17px;"><a href="{{listPath}}">list</a></div>
-    </div>
-    {{{fieldHtml}}}
-{{#if edit}}
-</form>
-{{/if}}
+            <input class="btn form-inline" type="button" value="Back" onclick="window.history.back();">
+            <div style="float: right; padding-left: 17px;"><a href="{{listPath}}">list</a></div>
+        </div>
+        {{{fieldHtml}}}
+    {{#if edit}}
+    </form>
+    {{/if}}
+</div>

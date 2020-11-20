@@ -39,6 +39,7 @@ function _render(ui, record, options) {
                     if (c.options) {
                         htmlInner += ui.input(c.options);
                     } else {
+                        c.fieldName = fieldName;
                         c.value = fieldValue;
                         c.inputType = c.type || ui.Type.TEXT;
                         c.readOnly = (fieldName == options.primaryKey) || !(options.edit || c.edit) || c.readOnly;
