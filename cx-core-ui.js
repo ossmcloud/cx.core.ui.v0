@@ -1,8 +1,7 @@
 'use strict'
 
-//const _table = require('./controls/table');
 const _table = require('./controls/table/table');
-const _form = require('./controls/form');
+const _form = require('./controls/.trash/form');
 const _formEx = require('./controls/form/form');
 const _dropDown = require('./controls/dropDown/dropDown');
 const _input = require('./controls/base/inputBase');
@@ -16,7 +15,8 @@ module.exports = {
         Type: _declarations.InputType,
 
         render: function (options) {
-            
+            // TODO: CX-UI: detect from option which control we need and use relevant function
+
         },
 
         input: function (options) {
