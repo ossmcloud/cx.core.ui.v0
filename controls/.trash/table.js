@@ -29,7 +29,7 @@ function renderActions(objects, options) {
 
     if (options.quickSearch) {
         actionPanel += '<div style="display: table-cell; width: 100%; text-align: right;">';
-        actionPanel += '<input id="' + options.tableId + '_search" class="form-control" style="display: inline-block;" type="text" placeholder="quick search..." >';
+        actionPanel += '<input id="' + options.id + '_search" class="form-control" style="display: inline-block;" type="text" placeholder="quick search..." >';
         actionPanel += '</div>';
     }
     
@@ -99,7 +99,7 @@ function renderTableBody(objects, options) {
 function render(objects, options) {
     if (!objects || objects.length === undefined) { throw new Error('Argument objects must be a list!'); }
     if (!options) { options = {}; }
-    if (options.tableId) { options.tableId = 'cx-table'; }
+    if (options.id) { options.id = 'cx-table'; }
     if (!options.class) { options.class = 'cx-fixhead'; }
     if (options.sortable === undefined) { options.sortable = true; }
     //objects = _core.list.toArray(objects.records);
@@ -114,7 +114,7 @@ function render(objects, options) {
     if (objects.length == 0) {
         table += '<h5>no data found</h5>';
     } else {
-        table += '<table id="' + options.tableId + '" class="' + options.class + '">';
+        table += '<table id="' + options.id + '" class="' + options.class + '">';
         table += renderTableHeader(objects, options);
         table += renderTableBody(objects, options);
         table += '</table>';

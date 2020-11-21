@@ -1,0 +1,35 @@
+<div id="{{id}}_outer_container" 
+    data-cx-record-name="{{recordName}}" 
+    data-cx-record-path="{{path}}" 
+    class="jx-table-outer-container {{fixHeadClassNoBorder}}"
+>
+    <div id="{{id}}_title_container" class="jx-table-title-outer-container">
+        <div id="{{id}}_title_container" class="jx-table-title-container">
+            {{{title}}}
+            {{#if allowNew}}
+                <input type="button" id="{{id}}_record_new" class="btn form-inline" style="margin-left: 17px;"; value="new record" />
+            {{/if}}
+        </div>
+        <div id="{{id}}_count_container" class="jx-table-count-container">
+            {{count}} item(s)
+        </div>
+        <div id="{{id}}_search_container" class="jx-table-search-container">
+            <input id="{{id}}_search" class="jx-control jx-table-quick-search" style="display: inline-block;" type="text" placeholder="quick search...">
+        </div>
+    </div>
+    {{#if filters}}
+        <div id="{{id}}_filter_outer_container" class="jx-table-filter-outer-container">
+            <div id="{{id}}_filter_container" class="jx-table-filter-container">
+                {{{filters}}}            
+            </div>
+            <div id="{{id}}_filter_action_container" class="jx-table-filter-action-container">
+                <input type="button" id="{{id}}_filter_refresh" class="btn form-inline" value="refresh" />
+                <input type="button" id="{{id}}_filter_clear" class="btn form-inline" value="clear" />
+            </div>
+        </div>
+    {{/if}}
+    {{{content}}}
+    <div id="{{id}}_table_container" class="jx-table-container">
+        {{{table}}}
+    </div>
+</div>

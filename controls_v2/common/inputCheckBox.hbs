@@ -1,0 +1,13 @@
+{{#if readOnly}}
+<span id="{{id}}" name="{{id}}" class="jx-inlineText">{{value}}</span>
+{{else}}
+<input
+    id="{{id}}" name="{{id}}" class="jx-control" type="checkbox" value="{{value}}" 
+    {{#if value}} checked  {{/if}}
+    {{#if width}} style="width: 30px;" {{/if}}
+    {{#if disabled}} disabled  {{/if}}
+/>
+<label onclick="$(this).prev().click();">
+{{labelCheckBox}}
+</label>
+{{/if}}

@@ -4,6 +4,7 @@ const _fs = require('fs');
 const _path = require('path');
 const _h = require('handlebars');
 const _core = require('cx-core');
+const _declarations = require('../../cx-core-ui-declarations');
 
 
 function getColumns(record, options) {
@@ -36,14 +37,16 @@ function _render(ui, record, options) {
                     var fieldName = c.name;
                     var fieldValue = record[fieldName];
                     if (fieldValue === undefined || fieldValue === null) { fieldValue = ''; }
+                    if (!c.type) { c.type = _declarations.ControlType.TEXT; }
+
                     if (c.options) {
-                        htmlInner += ui.input(c.options);
+                        htmlInner += ui.render(c.options);
                     } else {
                         c.fieldName = fieldName;
                         c.value = fieldValue;
                         c.inputType = c.type || ui.Type.TEXT;
                         c.readOnly = (fieldName == options.primaryKey) || !(options.edit || c.edit) || c.readOnly;
-                        htmlInner += ui.input(c);
+                        htmlInner += ui.render(c);
                     }
                 }
             });

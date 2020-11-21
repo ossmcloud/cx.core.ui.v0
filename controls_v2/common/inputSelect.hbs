@@ -1,0 +1,28 @@
+{{#if readOnly}}
+<span id="{{id}}" name="{{id}}" class="jx-inlineText">{{value}}</span>
+{{else}}
+
+<select
+    id="{{id}}" name="{{id}}" class="jx-control" 
+    {{#if width}} {{/if}}
+    {{#if disabled}} disabled  {{/if}}
+>
+    {{! add disabled item to work as place holder }}
+    {{#if placeHolder}}
+        <option value="" selected disabled>{{placeHolder}}</option>
+    {{/if}}
+    {{! if allow empty then add blank option }}
+    {{#if allowEmpty}}
+        <option value=""></option>
+    {{/if}}
+    {{! now add the options }}
+    {{#each options as | option |}}
+        <option value="{{option.value}}"
+            {{! this is a custom helper}}
+            {{#if_val option.value}}
+                selected
+            {{/if_val}}
+        >{{this.text}}</option>
+    {{/each}}
+</select>
+{{/if}}

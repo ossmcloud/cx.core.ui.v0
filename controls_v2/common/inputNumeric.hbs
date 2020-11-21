@@ -1,0 +1,13 @@
+{{#if readOnly}}
+<span id="{{id}}" name="{{id}}" class="jx-inlineText">{{value}}</span>
+{{else}}
+<input
+    id="{{id}}" name="{{id}}" class="jx-control" type="number" value="{{value}}" 
+    {{#if width}} {{/if}}
+    {{#if min}} min="{{min}}" {{/if}}
+    {{#if max}} max="{{max}}" {{/if}}
+    {{#if step}} step="{{step}}" {{/if}}
+    {{#if placeHolder}}  placeholder="{{placeHolder}}" {{/if}}
+    {{#if disabled}} disabled  {{/if}}
+/>
+{{/if}}

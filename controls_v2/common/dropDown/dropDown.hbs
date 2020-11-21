@@ -1,0 +1,24 @@
+<div class="jx-drop-down-container" id="{{id}}_control" 
+    data-bkgd-color="{{css.backgroundColor}}" data-bkgd-color-hover="{{css.backgroundColorHover}}">
+    <div>
+        <input id="{{id}}" name="{{id}}" type="hidden" value="{{value}}" />
+        <input 
+            id="{{id}}_input" class="jx-control jx-drop-down-input {{css.input}}" 
+            placeholder="{{placeHolder}}" type="text" 
+            {{#if disabled}} disabled  {{/if}}
+        />
+        {{#unless disabled}}
+        <span id="{{id}}_arrow" class="jx-drop-down-arrow">
+            ▼
+        </span>
+        {{/unless}}
+    </div>
+    
+    {{!-- <div id="{{id}}_dropDown" name="{{fieldName}}" class="jx-drop-down"> --}}
+    <div id="{{id}}_dropDown" class="jx-drop-down">
+        {{#each items}}
+            <div data-value="{{this.value}}" class="jx-drop-down-item">{{this.text}}</div>
+        {{/each}}
+    </div>
+    
+</div>
