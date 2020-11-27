@@ -45,7 +45,7 @@ function _render(ui, record, options) {
                         c.fieldName = fieldName;
                         c.value = fieldValue;
                         c.inputType = c.type || ui.Type.TEXT;
-                        c.readOnly = (fieldName == options.primaryKey) || !(options.edit || c.edit) || c.readOnly;
+                        c.readOnly = (fieldName == options.primaryKey) || !(options.editMode || c.edit) || c.readOnly;
                         htmlInner += ui.render(c);
                     }
                 }

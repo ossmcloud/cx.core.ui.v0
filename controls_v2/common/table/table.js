@@ -12,6 +12,7 @@ class TableColumn {
     #title = '';
     #align = '';
     #width = '';
+    #lookUps = [];
     constructor(options) {
         if (!options) { options = {}; }
         this.#o = options;
@@ -19,6 +20,8 @@ class TableColumn {
         this.#title = options.title || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
+        this.#lookUps = options.lookUps || [];
+        
     }
 
     get name() { return this.#name; }
@@ -29,13 +32,25 @@ class TableColumn {
     } set width(val) {
         this.#width = val;
     }
+    get lookUps() { return this.#lookUps; }
+    
 
     value(object) {
         var val = object[this.name];
-        if (val === null) { val = '[NULL]'; }
-        if (val === undefined) { val = '[UNKNOWN]'; }
-        if (val.constructor.name === 'Date') {
-            val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
+        if (val === null) { return '[NULL]'; }
+        if (val === undefined) { return '[UNKNOWN]'; }
+        if (this.lookUps.length > 0) {
+            for (var lx = 0; lx < this.lookUps.length; lx++) {
+                if (this.lookUps[lx].value == val) {
+                    val = this.lookUps[lx].text;
+                    break;
+                }
+            }
+            
+        } else {
+            if (val.constructor.name === 'Date') {
+                val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
+            }
         }
         return val;
     }
@@ -48,7 +63,7 @@ function formatColumns(objects, options) {
             var keys = _core.getAllKeys(objects[0], 2);
             keys.forEach(k => {
                 if (k === 'constructor') { return; }
-                if (_core.isObj(object[k])) { return; }
+                if (_core.isObj(objects[k])) { return; }
                 options.columns.push(new TableColumn(k));
                 //if (options.columns.indexOf(k) === -1) { options.columns.push(k); }
             });
@@ -79,7 +94,9 @@ function renderTableHeader(objects, options) {
 function renderTableBody(objects, options) {
     var tBody = '<tbody>';
     for (var i = 0; i < objects.length; i++) {
-        tBody += '<tr>';
+        var highlightStyle = getHighlightStyle(objects[i], options);
+        
+        tBody += `<tr style="${highlightStyle}">`;
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellValue = col.value(objects[i]);
@@ -90,12 +107,28 @@ function renderTableBody(objects, options) {
                 if (options.allowEdit) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
                 col.width = '50px';
             }
+            
             tBody += `<td style="width: ${col.width}; text-align: ${col.align};">${cellValue}</td>`;
         }
         tBody += '</tr>';
     }
     tBody += '</tbody>';
     return tBody;
+}
+
+function getHighlightStyle(object, options) {
+    var style = '';
+    for (var hx = 0; hx < options.highlights.length; hx++) {
+        var h = options.highlights[hx];
+        var rawVal = object[h.column];
+        if (h.op == '=') {
+            if (rawVal == h.value) {
+                style = h.style
+                break;
+            }
+        }
+    }
+    return style;
 }
 
 
@@ -110,6 +143,8 @@ function render(options, objects) {
     //
     options.fixHeadClass = (options.fixHeader === true) ? 'jx-fixhead' : '';
     options.fixHeadClassNoBorder = (options.fixHeader === true) ? 'jx-fixhead-noborder' : '';
+    //
+    if (!options.highlights) { options.highlights = []; }
     //
     formatColumns(objects, options);
     // 

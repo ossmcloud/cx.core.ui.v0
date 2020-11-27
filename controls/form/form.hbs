@@ -1,14 +1,14 @@
 
-<div data-cx-control="form" id="{{id}}_form_container" class="form-outer-container {{cssClass}}">
-    <h1 id="jx_page_title" class="p_title">{{formTitle}}</h1>
-    {{#if edit}}
+<div data-cx-control="form" id="{{id}}_form_container" data-cx-record-name="{{recordName}}" class="form-outer-container {{cssClass}}">
+    <h1 id="jx_page_title" class="p_title">{{title}} {{editMode}}</h1>
+    {{#if editMode}}
     <form id="{{id}}_form" method="{{formMethod}}" action="{{formAction}}">
     {{/if}}
-        <input name="accountId" type="hidden" value="{{accountId}}">
-        <input name="recordId" type="hidden" value="{{recordId}}">
-        <input name="rowVersion" type="hidden" value="{{rowVersion}}">
+        <input id="accountId" name="accountId" type="hidden" value="{{accountId}}">
+        <input id="recordId" name="recordId" type="hidden" value="{{recordId}}">
+        <input id="rowVersion" name="rowVersion" type="hidden" value="{{rowVersion}}">
         <div class="form-action-panel">
-            {{#if edit}}
+            {{#if editMode}}
                 <input class="btn form-inline" type="submit" value="Save">
             {{else}}
                 {{#if allowEdit}}
@@ -16,10 +16,13 @@
                 {{/if}}
             {{/if}}
             <input class="btn form-inline" type="button" value="Back" onclick="window.history.back();">
+            {{#each buttons as | b |}}
+                <input class="btn form-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
+            {{/each}}
             <div style="float: right; padding-left: 17px;"><a href="{{listPath}}">list</a></div>
         </div>
         {{{fieldHtml}}}
-    {{#if edit}}
+    {{#if editMode}}
     </form>
     {{/if}}
 </div>
