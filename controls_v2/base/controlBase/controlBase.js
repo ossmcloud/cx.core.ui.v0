@@ -37,6 +37,14 @@ function _render(options) {
         // 
         if (Array.isArray(options.data)) {
             // this would be the norm, we have a collection of data attributes
+
+            if (options.validation) {
+                var validationAttribute = _cx_list.findInArray(options.data, 'name', 'validation');
+                if (!validationAttribute) {
+                    options.data.unshift({ name: 'validation', value: formatDataValue(options.validation) });
+                }
+            }
+
             //  FIELD VALUE - add if not already there
             var dataAttribute = _cx_list.findInArray(options.data, 'name', 'field-value');
             if (!dataAttribute) { options.data.unshift({ name: 'field-value', value: formatDataValue(options.value) }); }

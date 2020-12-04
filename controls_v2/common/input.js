@@ -9,6 +9,12 @@ const _dropDown = require('./dropDown/dropDown');
 const _table = require('./table/table');
 
 function _render(options, objects) {
+    if (!options.id) {
+        options.id = (options.fieldName || options.name);
+        if (!options.id) {
+            options.id = 'cx_control';
+        }
+    }
     if (options.type == _declarations.ControlType.DROPDOWN || (!options.type && Array.isArray(options.items))) {
         options.type = _declarations.ControlType.DROPDOWN;
         return _dropDown.render(options);
@@ -23,6 +29,10 @@ function _render(options, objects) {
         // TODO: CX-UI: we want to have one for types: date, datetime-local, month, time, week use a sub type
         if (options.type == _declarations.ControlType.DATE) { options.htmlType = 'date'; }
         //
+        if (options.type == _declarations.ControlType.SELECT) {
+            if (!options.options && options.items) { options.options = options.items; }
+        }
+        //
         if (options.type == _declarations.ControlType.CHECK) {
             //
             options.labelCheckBox = options.label;
@@ -34,6 +44,14 @@ function _render(options, objects) {
             
             } else {
                 options.value = null;
+            }
+        }
+        if (options.readOnly && options.lookUps) {
+            for (var lx = 0; lx < options.lookUps.length; lx++) {
+                if (options.lookUps[lx].value == options.value) {
+                    options.value = options.lookUps[lx].text;
+                    break;
+                }
             }
         }
         //

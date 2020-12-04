@@ -132,6 +132,7 @@ function getHighlightStyle(object, options) {
 }
 
 
+
 function render(options, objects) {
     //
     if (!objects || objects.length === undefined) { throw new Error('Argument objects must be a list!'); }
@@ -145,6 +146,7 @@ function render(options, objects) {
     options.fixHeadClassNoBorder = (options.fixHeader === true) ? 'jx-fixhead-noborder' : '';
     //
     if (!options.highlights) { options.highlights = []; }
+    
     //
     formatColumns(objects, options);
     // 

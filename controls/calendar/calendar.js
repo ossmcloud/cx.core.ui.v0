@@ -16,8 +16,8 @@ function _render(options) {
         startDate = startDate.addDays(-1);
     }
 
-    var html = '';
-    while (startDate.getMonth() < m) {
+    var html = ''; var c = 0;
+    while (startDate.getMonth() < (m-1)) {
         html += '<tr>';
         for (var dx = 0; dx < 7; dx++) {
             // console.log(dx);
@@ -35,8 +35,10 @@ function _render(options) {
                 html += `<td class="cx-calendar-past">${startDate.getDate()}</td>`;
             }
             startDate = startDate.addDays(1);
+            c++;
         }
         html += '</tr>';
+        if (c > 100) { break; }
     }
     options.calendar = html;
 

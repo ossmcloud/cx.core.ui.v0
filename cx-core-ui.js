@@ -21,68 +21,51 @@ const _commonInputs = require('./controls_v2/common/input');
 const _h = require('handlebars');
 _h.registerHelper('if_val', function (arg1, options) {
     //if (options.data) { data = _h.createFrame(options.data); }
-    return (arg1 == options.data.root.value) ? options.fn(this) : options.inverse(this);
+    if (arg1 == null || arg1 == undefined) { arg1 = ''; }
+    var rootValue = options.data.root.value;
+    if (rootValue == null || rootValue == undefined) { rootValue = ''; }
+    return (arg1.toString() == rootValue.toString()) ? options.fn(this) : options.inverse(this);
 });
+
+
+function _renderTableFilters(options) {
+    if (!options.filters) { return ''; }
+    if (!options.query) { options.query = {}; }
+    var filtersHtml = '';
+    for (var fx = 0; fx < options.filters.length; fx++) {
+        var filter = options.filters[fx];
+        filter.inline = true;
+        filter.value = options.query[filter.fieldName];
+        filtersHtml += _renderControl(filter);
+    }
+    return filtersHtml;
+}
+
+function _renderControl(options, objects) {
+    //if (!options.width) { options.width = 'auto'; }
+    if (options.inline === true) { options.cssOuterContainer = 'jx-control-inline'; }
+    if (!options.id) { options.id = options.name; }
+    if (!options.name) { options.name = options.id; }
+    // ender filters if any
+    if (Array.isArray(options.filters)) { options.filters = _renderTableFilters(options); }
+    // TODO: CX-UI: detect from option which control we need and use relevant function
+    return _commonInputs.render(options, objects);
+}
 
 
 module.exports = {
     controls: {
-
         Type: _declarations.InputType,
         CtrlType: _declarations.ControlType,    
-
-        render: function (options, objects) {
-            //if (!options.width) { options.width = 'auto'; }
-            if (options.inline === true) { options.cssOuterContainer = 'jx-control-inline'; }
-            if (!options.id) { options.id = options.name; }
-            if (!options.name) { options.name = options.id; }
-            // TODO: CX-UI: detect from option which control we need and use relevant function
-            return _commonInputs.render(options, objects);
-        },
-
-        // table: function (objects, options) {
-        //     options.type = _declarations.ControlType.TABLE;
-        //     return _table.render(objects, options);
-        // },
+        //
+        render: _renderControl,
 
 
-        // input: function (options) {
-        //     if (!options.width) { options.width = 'auto'; }
-        //     if (options.inline === true) { options.inline = 'form-input-inline'; }
-        //     if (!options.id) { options.id = options.name; }
-        //     if (!options.name) { options.name = options.id; }
-
-        //     if (options.inputType == _declarations.InputType.SELECT) {
-        //         options.inputControl = _dropDown.render(options);
-        //     } else {
-        //         options.inputControl = _inputCommon.render(options);
-        //     }
-            
-        //     return _input.render(options);
-        // },
-        // text: function (options) {
-        //     options.inputType = _declarations.InputType.TEXT;
-        //     return this.input(options);  
-        // },
-        // date: function (options) {
-        //     options.inputType = _declarations.InputType.DATE;
-        //     return this.input(options);
-        // },
-        // dropDown: function (options) {
-        //     options.inputType = _declarations.InputType.SELECT;
-        //     return this.input(options);
-        // },
-
-
-
-
+        // TODO: move to controls v2
         calendar: function (options) {
             if (!options) { options = {}; }
             return _calendar.render(options);
         },
-       
-        
-
         form: function (record, options) {
             return _form.render(record, options);
         },

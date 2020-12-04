@@ -7,6 +7,17 @@ const _inputBase = require('../../base/inputBase/inputBase');
 
 function _render(options) {
     var items = [];
+    if (options.dropDown) {
+        if (options.dropDown.allowEmpty) {
+            items.push({ value: '', text: (options.dropDown.allowEmpty == true) ? '' : options.dropDown.allowEmpty });
+        }
+        if (options.dropDown.allowAll) {
+            items.push({ value: '', text: (options.dropDown.allowAll == true) ? '- all -' : options.dropDown.allowAll });
+        }
+        if (options.dropDown.allowNone) {
+            items.push({ value: '@NULL@', text: (options.dropDown.allowNone == true) ? '- none -' : options.dropDown.allowNone });
+        }
+    }
     options.items.forEach(item => {
         if (item.value === undefined || item.text === undefined) {
             items.push({ value: item, text: item });

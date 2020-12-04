@@ -1,6 +1,6 @@
 
 <div data-cx-control="form" id="{{id}}_form_container" data-cx-record-name="{{recordName}}" class="form-outer-container {{cssClass}}">
-    <h1 id="jx_page_title" class="p_title">{{title}} {{editMode}}</h1>
+    <h1 id="jx_page_title" class="p_title">{{title}}</h1>
     {{#if editMode}}
     <form id="{{id}}_form" method="{{formMethod}}" action="{{formAction}}">
     {{/if}}
@@ -8,14 +8,18 @@
         <input id="recordId" name="recordId" type="hidden" value="{{recordId}}">
         <input id="rowVersion" name="rowVersion" type="hidden" value="{{rowVersion}}">
         <div class="form-action-panel">
+            <input class="btn form-inline" type="button" value="Back" onclick="window.history.back();">
             {{#if editMode}}
                 <input class="btn form-inline" type="submit" value="Save">
+                {{#if allowDelete}}
+                    <input class="btn form-inline" style="color: red;" type="button" value="Delete" onclick="cx.clientExec('deleteRecord');">
+                {{/if}}
             {{else}}
                 {{#if allowEdit}}
                     <input class="btn form-inline" type="button" value="Edit" onclick="document.location.href='/{{path}}?id={{recordId}}&e=T';" />
                 {{/if}}
             {{/if}}
-            <input class="btn form-inline" type="button" value="Back" onclick="window.history.back();">
+            
             {{#each buttons as | b |}}
                 <input class="btn form-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
             {{/each}}

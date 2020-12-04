@@ -36,7 +36,7 @@ function _render(ui, record, options) {
                 if (c.group == g.name && c.column == gcx) {
                     var fieldName = c.name;
                     var fieldValue = record[fieldName];
-                    if (fieldValue === undefined || fieldValue === null) { fieldValue = ''; }
+                    if (fieldValue === undefined || fieldValue === null && c.readOnly) { fieldValue = '[NULL]'; }
                     if (!c.type) { c.type = _declarations.ControlType.TEXT; }
 
                     if (c.options) {
@@ -46,13 +46,14 @@ function _render(ui, record, options) {
                         c.value = fieldValue;
                         c.inputType = c.type || ui.Type.TEXT;
                         c.readOnly = (fieldName == options.primaryKey) || !(options.editMode || c.edit) || c.readOnly;
+                        c.width = c.width || '100%';
                         htmlInner += ui.render(c);
                     }
                 }
             });
-            if (htmlInner) {
+            //if (htmlInner) {
                 html += '<div class="form-field-group-column">' + htmlInner + '</div>';
-            }
+            //}
         }
     
         var fieldsGroup = _h.compile(_fs.readFileSync(_path.join(__dirname, 'form-fields-group.hbs'), 'utf8'));
