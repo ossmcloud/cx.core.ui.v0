@@ -37,7 +37,13 @@ function _render(ui, record, options) {
                     var fieldName = c.name;
                     var fieldValue = record[fieldName];
                     if (fieldValue === undefined || fieldValue === null && c.readOnly) { fieldValue = '[NULL]'; }
-                    if (!c.type) { c.type = _declarations.ControlType.TEXT; }
+                    if (!c.type) {
+                        if (c.items){
+                            c.type = _declarations.ControlType.DROPDOWN;
+                        } else {
+                            c.type = _declarations.ControlType.TEXT;
+                        }
+                    }
 
                     if (c.options) {
                         htmlInner += ui.render(c.options);

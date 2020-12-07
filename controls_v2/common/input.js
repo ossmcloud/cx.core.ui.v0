@@ -15,10 +15,13 @@ function _render(options, objects) {
             options.id = 'cx_control';
         }
     }
+    //if (options.inline == undefined) { options.inline = true; }
+    if (options.inline === true) { options.cssOuterContainer = 'jx-control-inline'; }
     if (options.type == _declarations.ControlType.DROPDOWN || (!options.type && Array.isArray(options.items))) {
         options.type = _declarations.ControlType.DROPDOWN;
+        if (options.value == undefined && objects) { options.value = objects[options.name]; }
         return _dropDown.render(options);
-    } else if (options.type == _declarations.ControlType.TABLE || (!options.type && objects)) {
+    } else if (options.type == _declarations.ControlType.TABLE || (!options.type && objects.length)) {
         options.type = _declarations.ControlType.TABLE;
         return _table.render(options, objects);
     } else {
@@ -46,6 +49,8 @@ function _render(options, objects) {
                 options.value = null;
             }
         }
+
+        if (options.value == undefined) { options.value = objects[options.name]; }
         if (options.readOnly && options.lookUps) {
             for (var lx = 0; lx < options.lookUps.length; lx++) {
                 if (options.lookUps[lx].value == options.value) {
@@ -54,6 +59,9 @@ function _render(options, objects) {
                 }
             }
         }
+       
+        
+
         //
         var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, options.type + '.hbs'), 'utf8'));
         options.content = hTmpl(options);

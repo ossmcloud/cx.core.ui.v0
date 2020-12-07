@@ -27,6 +27,8 @@ function _render(options) {
     });
     options.items = items;
 
+    if (options.readOnly) { options.disabled = true; }
+
     if (!options.css) {
         options.css = {
             //input: 'btn',

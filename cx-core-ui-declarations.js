@@ -19,6 +19,7 @@ const _controlType = {
     DROPDOWN: 'inputDropDown',
     TABLE: 'table',
     FORM: 'form',
+    GROUP: 'controlGroup'
 }
 
 module.exports = {
