@@ -20,20 +20,15 @@ function _renderTableFilters(options) {
 }
 
 function _renderControl(options, objects) {
-    if (options.inline === true) { options.cssOuterContainer = 'jx-control-inline'; }
-
-    if (options.controls || options.fields) {
+    var controlArray = options.controls || options.fields;
+    if (controlArray) {
         var renderedControls = '';
-        var controlArray = options.controls || options.fields;
-        
         if (!options.columnCount) { options.columnCount = 1; }
         for (var colNo = 1; colNo <= options.columnCount; colNo++) {
             renderedControls += '<div class="jx-control-group-column"'
-            if (options.columnCount == 1) {
-                renderedControls += ' style="display: table-row"';
-            }
+            if (options.columnCount == 1) { renderedControls += ' style="display: table-row"'; }
             renderedControls += '>';
-            
+            //
             for (var cx = 0; cx < controlArray.length; cx++) {
                 if (!controlArray[cx].column) { controlArray[cx].column = 1; }
                 if (controlArray[cx].column == colNo) {
@@ -48,20 +43,14 @@ function _renderControl(options, objects) {
             }
             renderedControls += '</div>';
         }
-        
+        //
         options.controlsHtml = renderedControls;
         options.type = _declarations.ControlType.GROUP;
         return _controlGroup.render(options, objects);
-
     } else {
-        //if (!options.width) { options.width = 'auto'; }
-
-        if (!options.id) { options.id = options.name; }
-        if (!options.name) { options.name = options.id; }
-        // ender filters if any
+        // render filters if any
         if (Array.isArray(options.filters)) { options.filters = _renderTableFilters(options); }
-
-        // TODO: CX-UI: detect from option which control we need and use relevant function
+        // render control
         return _commonInputs.render(options, objects);
     }
 }

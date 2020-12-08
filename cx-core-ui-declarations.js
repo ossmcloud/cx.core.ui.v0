@@ -1,10 +1,10 @@
 'use strict';
 
-const _inputType = {
-    TEXT: 'textInput',
-    DATE: 'dateInput',
-    SELECT: 'dropDownInput'
-}
+// const _inputType = {
+//     TEXT: 'textInput',
+//     DATE: 'dateInput',
+//     SELECT: 'dropDownInput'
+// }
 
 // NOTE: this MUST match:
 //  ..\cx.app.v0\public\javascript\jx-api\jx-declarations.js(CX_CONTROL.TYPE)
@@ -24,6 +24,6 @@ const _controlType = {
 }
 
 module.exports = {
-    InputType: _inputType,
+    //InputType: _inputType,
     ControlType: _controlType,
 }
