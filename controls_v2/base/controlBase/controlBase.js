@@ -54,6 +54,11 @@ function _render(options) {
                 var field = (options.field == undefined) ? options.fieldName : options.field;
                 options.data.unshift({ name: 'field', value: formatDataValue(field) });
             }
+            //  RECORD TYPE - add if not already there
+            dataAttribute = _cx_list.findInArray(options.data, 'name', 'record-name');
+            if (!dataAttribute) {
+                options.data.unshift({ name: 'record-name', value: options.recordName });
+            }
             // CONTROL TYPE - add if not already there
             dataAttribute = _cx_list.findInArray(options.data, 'name', 'control');
             if (!dataAttribute) { options.data.unshift({ name: 'control', value: formatDataValue(options.type) }); }

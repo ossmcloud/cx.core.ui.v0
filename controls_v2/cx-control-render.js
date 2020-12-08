@@ -28,11 +28,22 @@ function _renderControl(options, objects) {
         
         if (!options.columnCount) { options.columnCount = 1; }
         for (var colNo = 1; colNo <= options.columnCount; colNo++) {
-            renderedControls += '<div class="jx-control-group-column">';
+            renderedControls += '<div class="jx-control-group-column"'
+            if (options.columnCount == 1) {
+                renderedControls += ' style="display: table-row"';
+            }
+            renderedControls += '>';
+            
             for (var cx = 0; cx < controlArray.length; cx++) {
                 if (!controlArray[cx].column) { controlArray[cx].column = 1; }
                 if (controlArray[cx].column == colNo) {
-                    renderedControls += _renderControl(controlArray[cx], objects);
+                    if (controlArray[cx].html) {
+                        renderedControls += html;   
+                    } else {
+                        if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
+                        if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
+                        renderedControls += _renderControl(controlArray[cx], objects);
+                    }
                 }
             }
             renderedControls += '</div>';
@@ -41,6 +52,7 @@ function _renderControl(options, objects) {
         options.controlsHtml = renderedControls;
         options.type = _declarations.ControlType.GROUP;
         return _controlGroup.render(options, objects);
+
     } else {
         //if (!options.width) { options.width = 'auto'; }
 
@@ -48,6 +60,7 @@ function _renderControl(options, objects) {
         if (!options.name) { options.name = options.id; }
         // ender filters if any
         if (Array.isArray(options.filters)) { options.filters = _renderTableFilters(options); }
+
         // TODO: CX-UI: detect from option which control we need and use relevant function
         return _commonInputs.render(options, objects);
     }

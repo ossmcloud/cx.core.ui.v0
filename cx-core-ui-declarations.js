@@ -13,6 +13,7 @@ const _inputType = {
 const _controlType = {
     TEXT: 'inputText',
     DATE: 'inputDate',
+    // DATE_TIME: 'inputDateTime',
     NUMERIC: 'inputNumeric',
     CHECK: 'inputCheckBox',
     SELECT: 'inputSelect',

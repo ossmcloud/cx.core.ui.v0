@@ -80,6 +80,9 @@ function formatColumns(objects, options) {
 
 function renderTableHeader(objects, options) {
     var tHead = '<thead><tr>';
+    if (options.actions) {
+        tHead += '<th style="text-align: center">actions</th>';
+    }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
         var dataFieldName = `data-field-name="${col.name}"`;
@@ -96,7 +99,20 @@ function renderTableBody(objects, options) {
     for (var i = 0; i < objects.length; i++) {
         var highlightStyle = getHighlightStyle(objects[i], options);
         
-        tBody += `<tr style="${highlightStyle}">`;
+        tBody += `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}">`;
+        if (options.actions) {
+            tBody += '<td style="text-align: center">';
+            for (var ax = 0; ax < options.actions.length; ax++) {
+                var action = options.actions[ax];
+                if (action.funcName) {
+                    tBody += `<a href="#" onclick="cx.clientExec('${action.funcName}', ${objects[i][options.primaryKey]})" >${action.label}</a>`;    
+                } else if (action.link) {
+                    tBody += `<a href="${action.link}" target="${action.target}" >${action.label}</a>`;    
+                }
+                
+            }
+            tBody += '</td>';
+        }
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellValue = col.value(objects[i]);
