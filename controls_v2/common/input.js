@@ -27,7 +27,7 @@ function detectControlValue(options, objects) {
     var value = null;
     if (options.value != undefined) {
         value = options.value;
-    } else if (Array.isArray(objects)) {
+    } else if (objects && (Array.isArray(objects) || objects.records)) {
         value = null;
     } else if (options.name && objects) {
         value = objects[options.name];
@@ -51,7 +51,7 @@ function detectControlType(options, objects) {
     if (options.inputType) { return options.inputType; }
     if (Array.isArray(options.items)) { return _declarations.ControlType.DROPDOWN; }
     if (Array.isArray(options.options)) { return _declarations.ControlType.SELECT; }
-    if (Array.isArray(objects) || Array.isArray(options.records)) { return _declarations.ControlType.TABLE; }
+    if (Array.isArray(objects) || Array.isArray(objects.records) || Array.isArray(options.records)) { return _declarations.ControlType.TABLE; }
     if (options.value) {
         if (options.value.constructor.name === 'Date') { return _declarations.ControlType.DATE; }
         if (options.value.constructor.name === 'Boolean') { return _declarations.ControlType.CHECK; }

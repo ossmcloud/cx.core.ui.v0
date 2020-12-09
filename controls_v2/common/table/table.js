@@ -9,6 +9,7 @@ const _controlBase = require('../../base/controlBase/controlBase');
 class TableColumn {
     #o = null;
     #name = '';
+    #type = '';
     #title = '';
     #align = '';
     #width = '';
@@ -17,6 +18,7 @@ class TableColumn {
         if (!options) { options = {}; }
         this.#o = options;
         this.#name = options.name || options;
+        this.#type = options.type || '';
         this.#title = options.title || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
@@ -25,6 +27,7 @@ class TableColumn {
     }
 
     get name() { return this.#name; }
+    get type() { return this.#type; }
     get title() { return this.#title; }
     get align() { return this.#align; }
     get width() {
@@ -116,14 +119,18 @@ function renderTableBody(objects, options) {
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellValue = col.value(objects[i]);
-            //
-            if (col.name == options.primaryKey) {
-                var link = options.path + '?id=' + cellValue;
-                cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
-                if (options.allowEdit) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
-                col.width = '50px';
+            if (col.type == 'check') {
+                cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
+            } else {
+               
+                //
+                if (col.name == options.primaryKey) {
+                    var link = options.path + '?id=' + cellValue;
+                    cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
+                    if (options.allowEdit) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
+                    col.width = '50px';
+                }
             }
-            
             tBody += `<td style="width: ${col.width}; text-align: ${col.align};">${cellValue}</td>`;
         }
         tBody += '</tr>';
@@ -151,6 +158,7 @@ function getHighlightStyle(object, options) {
 
 function render(options, objects) {
     //
+    if (objects && objects.records) { objects = objects.records; }
     if (!objects || objects.length === undefined) { throw new Error('Argument objects must be a list!'); }
     if (!options) { options = {}; }
     if (!options.id) { options.id = 'cx-table'; }
