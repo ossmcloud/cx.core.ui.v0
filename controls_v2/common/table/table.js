@@ -84,7 +84,7 @@ function formatColumns(objects, options) {
 function renderTableHeader(objects, options) {
     var tHead = '<thead><tr>';
     if (options.actions) {
-        tHead += '<th style="text-align: center">actions</th>';
+        tHead += '<th style="text-align: center; width: 50px;">actions</th>';
     }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
@@ -104,7 +104,7 @@ function renderTableBody(objects, options) {
         
         tBody += `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}">`;
         if (options.actions) {
-            tBody += '<td style="text-align: center">';
+            tBody += '<td style="text-align: center; width: 50px;">';
             for (var ax = 0; ax < options.actions.length; ax++) {
                 var action = options.actions[ax];
                 if (action.funcName) {
@@ -168,6 +168,10 @@ function render(options, objects) {
     //
     options.fixHeadClass = (options.fixHeader === true) ? 'jx-fixhead' : '';
     options.fixHeadClassNoBorder = (options.fixHeader === true) ? 'jx-fixhead-noborder' : '';
+    options.classTblContainer = (options.fixHeader === true) ? 'jx-table-container-fixhead' : 'jx-table-container';
+    options.cssTitle = 'jx-table-title';
+    if (options.fixHeader) { options.cssTitle += '-fixhead'; }
+    
     //
     if (!options.highlights) { options.highlights = []; }
     

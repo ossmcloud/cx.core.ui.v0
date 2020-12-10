@@ -5,7 +5,7 @@
 >
     <div id="{{id}}_title_container" class="jx-table-title-outer-container">
         <div id="{{id}}_title_container" class="jx-table-title-container">
-            {{{title}}}
+            <span class="{{cssTitle}}">{{{title}}}</span>
             {{#if allowNew}}
                 <input type="button" id="{{id}}_record_new" class="btn form-inline" 
                 {{#if title}}
@@ -38,7 +38,7 @@
         </div>
     {{/if}}
     {{{content}}}
-    <div id="{{id}}_table_container" class="jx-table-container">
+    <div id="{{id}}_table_container" class="{{classTblContainer}}">
         {{{table}}}
     </div>
 </div>

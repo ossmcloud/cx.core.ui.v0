@@ -50,7 +50,7 @@ function detectControlType(options, objects) {
     if (options.type) { return options.type; }
     if (options.inputType) { return options.inputType; }
     if (Array.isArray(options.items)) { return _declarations.ControlType.DROPDOWN; }
-    if (Array.isArray(options.options)) { return _declarations.ControlType.SELECT; }
+    if (Array.isArray(options.options) || Array.isArray(options.lookUps)) { return _declarations.ControlType.SELECT; }
     if (Array.isArray(objects) || Array.isArray(objects.records) || Array.isArray(options.records)) { return _declarations.ControlType.TABLE; }
     if (options.value) {
         if (options.value.constructor.name === 'Date') { return _declarations.ControlType.DATE; }
@@ -95,6 +95,7 @@ function _render(options, objects) {
     //
     if (options.type == _declarations.ControlType.SELECT) {
         if (!options.options && options.items) { options.options = options.items; }
+        if (!options.options && options.lookUps) { options.options = options.lookUps; }
     }
 
     if (options.type == _declarations.ControlType.DROPDOWN) { return _dropDown.render(options); } 
