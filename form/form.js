@@ -4,8 +4,8 @@ const _core = require('cx-core');
 const _fs = require('fs');
 const _path = require('path');
 const _h = require('handlebars');
-const _control = require('../controls_v2/cx-control-render');
-const _controlBase = require('../controls_v2/base/controlBase/controlBase');
+const _control = require('../controls/cx-control-render');
+const _controlBase = require('../controls/base/controlBase/controlBase');
 
 function _render(options, record) {
     if (!options.formMethod) { options.formMethod = 'POST'; }

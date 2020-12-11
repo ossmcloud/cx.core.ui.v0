@@ -1,13 +1,11 @@
 'use strict'
 
 const _declarations = require('./cx-core-ui-declarations');
+const _form = require('./form/form');
+const _controls = require('./controls/cx-control-render');
 
 // TODO: CX-UI: Refactor
-const _calendar = require('./controls/calendar/calendar');
-
-// TODO: CX-UI: after refactoring all reverse folder name controls_v2
-const _form = require('./form/form');
-const _controls = require('./controls_v2/cx-control-render');
+const _calendar = require('./controls_old/calendar/calendar');
 
 
 // HANDLEBARS CUSTOM HELPERS
@@ -29,28 +27,8 @@ module.exports = {
     form: function (options, record) {
         return _form.render(options, record);
     },
-
-
-    // TODO: CX-UI: move to controls v2
     calendar: function (options) {
         if (!options) { options = {}; }
         return _calendar.render(options);
     },
-
-    // controls: {
-    //     CtrlType: _declarations.ControlType,    
-    //     // render control
-    //     render: _controls.render,
-    //     // render form
-    //     form: function (options, record) {
-    //         return _form.render(options, record);
-    //     },
-
-
-    //     calendar: function (options) {
-    //         if (!options) { options = {}; }
-    //         return _calendar.render(options);
-    //     },
-
-    // }
 }
