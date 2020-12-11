@@ -23,8 +23,6 @@ function _render(ui, record, options) {
     options.recordId = (record[options.primaryKey] || '');
     options.rowVersion = _core.bufferToString(record.rowVersion);
 
-    // TODO: render all field groups
-    //getColumns(record, options);
     options.fieldHtml = '';
     options.groups.forEach(g => {
         if (!g.columnCount) { g.columnCount = 5; }

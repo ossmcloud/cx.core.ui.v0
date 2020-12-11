@@ -1,6 +1,8 @@
 'use strict'
-// TODO: CX-UI: Refactor
+
 const _declarations = require('./cx-core-ui-declarations');
+
+// TODO: CX-UI: Refactor
 const _calendar = require('./controls/calendar/calendar');
 
 // TODO: CX-UI: after refactoring all reverse folder name controls_v2
@@ -20,22 +22,35 @@ _h.registerHelper('if_val', function (arg1, options) {
 });
 
 module.exports = {
-    controls: {
-        //Type: _declarations.InputType,
-        CtrlType: _declarations.ControlType,    
-        // render control
-        render: _controls.render,
-        // render form
-        form: function (options, record) {
-            return _form.render(options, record);
-        },
+    CtrlType: _declarations.ControlType,
+    // render control
+    render: _controls.render,
+    // render form
+    form: function (options, record) {
+        return _form.render(options, record);
+    },
 
 
-        // TODO: move to controls v2
-        calendar: function (options) {
-            if (!options) { options = {}; }
-            return _calendar.render(options);
-        },
+    // TODO: CX-UI: move to controls v2
+    calendar: function (options) {
+        if (!options) { options = {}; }
+        return _calendar.render(options);
+    },
 
-    }
+    // controls: {
+    //     CtrlType: _declarations.ControlType,    
+    //     // render control
+    //     render: _controls.render,
+    //     // render form
+    //     form: function (options, record) {
+    //         return _form.render(options, record);
+    //     },
+
+
+    //     calendar: function (options) {
+    //         if (!options) { options = {}; }
+    //         return _calendar.render(options);
+    //     },
+
+    // }
 }

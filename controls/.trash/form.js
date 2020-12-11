@@ -27,7 +27,6 @@ function _render(record, options) {
     if (options.edit) {
         html += '<input class="btn form-inline" type="submit" value="Save" />';
     } else {
-        // TODO: add edit button
         html += '<input class="btn form-inline" type="button" value="Edit" onclick="document.location.href=\'' + options.path + '?id=' + recId + '&e=T\';" />';
     }
     html += '<input class="btn form-inline" type="button" value="Back" onclick="window.history.back();" />';

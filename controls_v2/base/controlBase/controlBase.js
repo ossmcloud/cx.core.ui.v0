@@ -45,8 +45,20 @@ function _render(options) {
                 }
             }
 
+            // URLS
+            var dataAttribute = null;
+                
+            if (options.path) {
+                dataAttribute = _cx_list.findInArray(options.data, 'name', 'path');
+                if (!dataAttribute) { options.data.unshift({ name: 'path', value: formatDataValue(options.path) }); }
+            }
+            if (options.listPath) {
+                dataAttribute = _cx_list.findInArray(options.data, 'name', 'list-path');
+                if (!dataAttribute) { options.data.unshift({ name: 'list-path', value: formatDataValue(options.listPath) }); }
+            }
+
             //  FIELD VALUE - add if not already there
-            var dataAttribute = _cx_list.findInArray(options.data, 'name', 'field-value');
+            dataAttribute = _cx_list.findInArray(options.data, 'name', 'field-value');
             if (!dataAttribute) { options.data.unshift({ name: 'field-value', value: formatDataValue(options.value) }); }
             //  FIELD NAME - add if not already there
             dataAttribute = _cx_list.findInArray(options.data, 'name', 'field');
