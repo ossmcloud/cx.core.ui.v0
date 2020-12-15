@@ -5,6 +5,7 @@
 //  ..\cx.sdk.v0\cx.data.client.v0\cx-client-declarations.js(RENDER.CTRL_TYPE)
 const _controlType = {
     TEXT: 'inputText',
+    TEXT_AREA: 'inputTextArea',
     DATE: 'inputDate',
     NUMERIC: 'inputNumeric',
     CHECK: 'inputCheckBox',
@@ -12,7 +13,8 @@ const _controlType = {
     DROPDOWN: 'inputDropDown',
     TABLE: 'table',
     FORM: 'form',
-    GROUP: 'controlGroup'
+    GROUP: 'controlGroup',
+    HIDDEN: 'inputHidden',
 }
 
 module.exports = {

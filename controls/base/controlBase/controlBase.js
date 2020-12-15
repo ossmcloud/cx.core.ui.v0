@@ -45,9 +45,10 @@ function _render(options) {
                 }
             }
 
-            // URLS
+            
             var dataAttribute = null;
-                
+
+            // URLS
             if (options.path) {
                 dataAttribute = _cx_list.findInArray(options.data, 'name', 'path');
                 if (!dataAttribute) { options.data.unshift({ name: 'path', value: formatDataValue(options.path) }); }
@@ -57,6 +58,9 @@ function _render(options) {
                 if (!dataAttribute) { options.data.unshift({ name: 'list-path', value: formatDataValue(options.listPath) }); }
             }
 
+            //  FIELD DATA TYPE - add if not already there
+            dataAttribute = _cx_list.findInArray(options.data, 'name', 'field-data-type');
+            if (!dataAttribute) { options.data.unshift({ name: 'field-data-type', value: formatDataValue(options.dataType) }); }
             //  FIELD VALUE - add if not already there
             dataAttribute = _cx_list.findInArray(options.data, 'name', 'field-value');
             if (!dataAttribute) { options.data.unshift({ name: 'field-value', value: formatDataValue(options.value) }); }
@@ -65,6 +69,11 @@ function _render(options) {
             if (!dataAttribute) {
                 var field = (options.field == undefined) ? options.fieldName : options.field;
                 options.data.unshift({ name: 'field', value: formatDataValue(field) });
+            }
+            //  RECORD TITLE - add if not already there
+            dataAttribute = _cx_list.findInArray(options.data, 'name', 'record-title');
+            if (!dataAttribute && options.recordTitle) {
+                options.data.unshift({ name: 'record-title', value: options.recordTitle });
             }
             //  RECORD TYPE - add if not already there
             dataAttribute = _cx_list.findInArray(options.data, 'name', 'record-name');

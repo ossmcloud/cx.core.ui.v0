@@ -1,4 +1,7 @@
 {{#if readOnly}}
+<label onclick="$(this).prev().click();">
+    {{labelCheckBox}}
+</label>
 <span id="{{id}}" name="{{id}}" class="jx-inlineText">{{value}}</span>
 {{else}}
 <input

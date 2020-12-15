@@ -5,66 +5,44 @@
     <input id="accountId" name="accountId" type="hidden" value="{{accountId}}">
     <input id="recordId" name="recordId" type="hidden" value="{{recordId}}">
     <input id="rowVersion" name="rowVersion" type="hidden" value="{{rowVersion}}">
-    <div class="form-action-panel">
-        <table class="form-action-table">
-            <tr>
-                <td class="form-action-actions">
-                    <input class="btn jx-btn-inline" type="button" value="Back" onclick="window.history.back();">
-                    {{#if editMode}}
-                        <input class="btn jx-btn-inline jx-btn-save" type="submit" value="Save">
-                        {{#if allowDelete}}
-                            <input class="btn jx-btn-inline" style="color: red;" type="button" value="Delete" onclick="cx.clientExec('deleteRecord');">
-                        {{/if}}
-                    {{else}}
-                        {{#if allowEdit}}
-                            <input class="btn jx-btn-inline" type="button" value="Edit" onclick="document.location.href='/{{path}}?id={{recordId}}&e=T';" />
-                        {{/if}}
-                    {{/if}}
-                </td>
-                {{#if showButtons}}
-                    <td style="width: 7px;"></td>
-                    <td class="form-action-actions-sep"></td>
-                    <td style="width: 7px;"></td>
-                    <td>
-                        {{#each showButtons as | b |}}
-                            {{#if b.link}}
-                                <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="window.open('{{b.link}}');" />
-                            {{else}}
-                                <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
+    {{#unless hideActions}}
+        <div class="form-action-panel">
+            <table class="form-action-table">
+                <tr>
+                    <td class="form-action-actions">
+                        <input class="btn jx-btn-inline" type="button" value="Back" onclick="window.history.back();">
+                        {{#if editMode}}
+                            <input class="btn jx-btn-inline jx-btn-save" type="submit" value="Save">
+                            {{#if allowDelete}}
+                                <input class="btn jx-btn-inline" style="color: red;" type="button" value="Delete" onclick="cx.clientExec('deleteRecord');">
                             {{/if}}
-                        {{/each}}   
+                        {{else}}
+                            {{#if allowEdit}}
+                                <input class="btn jx-btn-inline" type="button" value="Edit" onclick="document.location.href='/{{path}}?id={{recordId}}&e=T';" />
+                            {{/if}}
+                        {{/if}}
                     </td>
-                {{/if}}
-                <td style="text-align: right; padding-right: 7px">
-                    <a href="{{listPath}}">list</a>
-                </td>
-            </tr>
-        </table>
-        {{!-- 
-        <div class="form-action-panel-inner">
-            <input class="btn jx-btn-inline" type="button" value="Back" onclick="window.history.back();">
-        
-            {{#if editMode}}
-                <input class="btn jx-btn-inline jx-btn-save" type="submit" value="Save">
-                {{#if allowDelete}}
-                    <input class="btn jx-btn-inline" style="color: red;" type="button" value="Delete" onclick="cx.clientExec('deleteRecord');">
-                {{/if}}
-            {{else}}
-                {{#if allowEdit}}
-                    <input class="btn jx-btn-inline" type="button" value="Edit" onclick="document.location.href='/{{path}}?id={{recordId}}&e=T';" />
-                {{/if}}
-            {{/if}}
+                    {{#if showButtons}}
+                        <td style="width: 7px;"></td>
+                        <td class="form-action-actions-sep"></td>
+                        <td style="width: 7px;"></td>
+                        <td>
+                            {{#each showButtons as | b |}}
+                                {{#if b.link}}
+                                    <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="window.open('{{b.link}}');" />
+                                {{else}}
+                                    <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
+                                {{/if}}
+                            {{/each}}   
+                        </td>
+                    {{/if}}
+                    <td style="text-align: right; padding-right: 7px">
+                        <a href="{{listPath}}">list</a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        {{#if showButtons}}
-            <div class="form-action-panel-separator"></div>
-            <div class="form-action-panel-inner">
-                {{#each showButtons as | b |}}
-                    <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
-                {{/each}}   
-            </div>
-        {{/if}}
-        <div class="form-action-panel-inner-right"><a href="{{listPath}}">list</a></div> --}}
-    </div>
+    {{/unless}}
 
     {{{fieldHtml}}}
 

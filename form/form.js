@@ -14,6 +14,11 @@ function _render(options, record) {
     options.rowVersion = _core.bufferToString(record.rowVersion);
     options.width = 'auto';
     options.type = 'form';
+
+    if (options.dialog == true) {
+        if (!options.data) { options.data = []; }
+        options.data.push({ name: 'dialog', value: true });
+    }
     
 
     options.fieldHtml = '';

@@ -24,9 +24,13 @@ function _renderControl(options, objects) {
     if (controlArray) {
         var renderedControls = '';
         if (!options.columnCount) { options.columnCount = 1; }
-        for (var colNo = 1; colNo <= options.columnCount; colNo++) {
+        for (var colNo = 1; colNo <= (options.columnCount);  colNo++) {
             renderedControls += '<div class="jx-control-group-column"'
-            if (options.columnCount == 1) { renderedControls += ' style="display: table-row"'; }
+            if (options.style) {
+                renderedControls += ' style="' + options.style + '"';
+            } else {
+                if (options.columnCount == 1) { renderedControls += ' style="display: table-row"'; }
+            }
             renderedControls += '>';
             //
             for (var cx = 0; cx < controlArray.length; cx++) {

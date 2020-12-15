@@ -1,0 +1,14 @@
+{{#if readOnly}}
+<span id="{{id}}" name="{{id}}" class="jx-inlineText">{{value}}</span>
+{{else}}
+<textarea
+    id="{{id}}" name="{{id}}" class="jx-control" type="text" 
+    rows="{{rows}}" cols="{{cols}}"
+    {{#if min}} minlength="{{min}}" {{/if}}
+    {{#if max}} maxlength="{{max}}" {{/if}}
+    {{#if placeHolder}}  placeholder="{{placeHolder}}" {{/if}}
+    {{#if disabled}} disabled  {{/if}}
+>
+{{value}}
+</textarea>
+{{/if}}

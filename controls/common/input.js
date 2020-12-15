@@ -18,23 +18,19 @@ function formatOptions(options) {
     //      fieldName   => the underlying field name
     if (options.fieldName == undefined && options.name != undefined) { options.fieldName = options.name; }
     if (options.fieldName == undefined && options.id != undefined) { options.fieldName = options.id; }
+    if (options.name == undefined && options.fieldName != undefined) { options.name = options.fieldName; }
     if (options.id == undefined && options.fieldName != undefined) { options.id = options.fieldName; }
    
     // TODO: should we generate some unique ID
     if (!options.id) { options.id = 'cx_control'; }
 
-   
-    // if (options.fieldName == undefined) {
-    //     options.fieldName = options.name || options.id;
-    // }
-
-    // if (!options.id) {        options.id = (options.fieldName || options.name);    }
-
-    // if (!options.name) { options.name = options.id; }
-
-    //if (!options.id) { options.id = 'cx_control'; }
-
-    if (options.inline === true) { options.cssOuterContainer = 'jx-control-inline'; }
+    //
+    if (options.hidden) {
+        options.type = _declarations.ControlType.HIDDEN;
+        options.cssOuterContainer = 'jx-control-hidden';
+    } else if (options.inline === true) {
+        options.cssOuterContainer = 'jx-control-inline';
+    }
 }
 
 
@@ -67,11 +63,27 @@ function detectControlType(options, objects) {
     if (Array.isArray(options.items)) { return _declarations.ControlType.DROPDOWN; }
     if (Array.isArray(options.options) || Array.isArray(options.lookUps)) { return _declarations.ControlType.SELECT; }
     if (Array.isArray(objects) || Array.isArray(objects.records) || Array.isArray(options.records)) { return _declarations.ControlType.TABLE; }
+
+    if (objects.getFieldDataType) {
+        options.dataType = objects.getFieldDataType(options.name);
+        if (options.dataType == 'varchar') { return _declarations.ControlType.TEXT; }
+        if (options.dataType == 'int' || options.dataType == 'bigint' || options.dataType == 'money') { return _declarations.ControlType.NUMERIC; }
+        if (options.dataType == 'datetime') { return _declarations.ControlType.DATE; }
+        if (options.dataType == 'date') { return _declarations.ControlType.DATE; }
+        if (options.dataType == 'bit') { return _declarations.ControlType.CHECK; }
+        //
+        if (options.dataType) {
+            options.dataType = options.dataType;
+        }
+
+    }
+
     if (options.value) {
         if (options.value.constructor.name === 'Date') { return _declarations.ControlType.DATE; }
         if (options.value.constructor.name === 'Boolean') { return _declarations.ControlType.CHECK; }
         if (options.value.constructor.name === 'Float' || options.value.constructor.name === 'Int') { return _declarations.ControlType.NUMERIC; }
     }
+
     return _declarations.ControlType.TEXT;
 }
 
@@ -95,6 +107,12 @@ function formatValue(options) {
             options.value = true;
         } else {
             options.value = null;
+        }
+    } else if (options.type == _declarations.ControlType.TEXT) {
+        if (options.value && options.value.length > 100) {
+            options.type = _declarations.ControlType.TEXT_AREA
+            options.rows = 7;
+            //options.rows = 5;
         }
     }
 
