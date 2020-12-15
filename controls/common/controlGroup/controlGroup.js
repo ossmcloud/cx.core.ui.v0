@@ -9,7 +9,7 @@ const _controlBase = require('../../base/controlBase/controlBase');
 function _render(options) {
     //
     if (!options.id) { options.id = options.group; }
-    if (!options.id) { options.id = options.groupTitle.replaceAll(' ', '_'); }
+    if (!options.id) { options.id = options.title.replaceAll(' ', '_'); }
     if (!options.id) { options.id = 'ctrl-group'; }
     //
     options.cssOuterContainer = 'jx-control-group ' + (options.cssOuterContainer || '');

@@ -76,9 +76,10 @@ function detectControlType(options, objects) {
 }
 
 function formatValue(options) {
-    if (!options.value) { return; }
+    
     if (options.type == _declarations.ControlType.DATE) {
         options.htmlType = 'date';
+        if (!options.value) { return; }
         if (options.value.constructor.name === 'Date') {
             options.htmlType = (options.value.hasTime()) ? 'datetime-local' : 'date';
             options.value = _core.date.format({ date: options.value, inverted: true, showTime: options.value.hasTime(), dateTimeSep: 'T' }); 
@@ -87,6 +88,7 @@ function formatValue(options) {
     } else if (options.type == _declarations.ControlType.CHECK) {
         options.labelCheckBox = options.label;
         options.label = null;
+        if (!options.value) { return; }
         if (options.value == true || options.value == 'T' || options.value == 't' || options.value == 'Y' || options.value == 'y'
             || options.value.toString().toLowerCase() == 'yes' || options.value == '1' || options.value > 0
             || options.value.toString().toLowerCase() == 'true') {
@@ -115,6 +117,10 @@ function _render(options, objects) {
 
     if (options.type == _declarations.ControlType.DROPDOWN) { return _dropDown.render(options); } 
     if (options.type == _declarations.ControlType.TABLE) { return _table.render(options, options.records || objects); }
+
+    // if (options.type == _declarations.ControlType.DATE && !options.htmlType) {
+    //     options.htmlType = 'date';
+    // }
 
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, options.type + '.hbs'), 'utf8'));
     options.content = hTmpl(options);

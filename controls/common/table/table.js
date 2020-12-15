@@ -83,9 +83,8 @@ function formatColumns(objects, options) {
 
 function renderTableHeader(objects, options) {
     var tHead = '<thead><tr>';
-    if (options.actions) {
-        tHead += '<th style="text-align: center; width: 50px;">actions</th>';
-    }
+    if (options.actionsTitle == undefined) { options.actionsTitle = 'actions'; }
+    if (options.actions && options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
         var dataFieldName = `data-field-name="${col.name}"`;
@@ -93,8 +92,30 @@ function renderTableHeader(objects, options) {
         var textAlign = ` style="text-align: ${col.align};"`; 
         tHead += '<th ' + dataFieldName + sortableClass + textAlign + '>' + col.title + '</th>';
     }
+    if (options.actions && !options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
     tHead += '</tr></thead>'
     return tHead;
+}
+
+function renderActions(object, options) {
+    var tBody = '';
+    if (options.actions) {
+        tBody += '<td style="text-align: center; width: 50px;">';
+        for (var ax = 0; ax < options.actions.length; ax++) {
+            var action = options.actions[ax];
+            if (action.funcName) {
+                tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]})" >${action.label}</a>`;
+            } else if (action.link) {
+                var link = action.link;
+                if (link[link.length - 1] == '=') {
+                    link += object[options.primaryKey];
+                }
+                tBody += `<a class="jx-table-action" href="${link}" target="${action.target}" >${action.label}</a>`;
+            }
+        }
+        tBody += '</td>';
+    }
+    return tBody;
 }
 
 function renderTableBody(objects, options) {
@@ -103,19 +124,9 @@ function renderTableBody(objects, options) {
         var highlightStyle = getHighlightStyle(objects[i], options);
         
         tBody += `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}">`;
-        if (options.actions) {
-            tBody += '<td style="text-align: center; width: 50px;">';
-            for (var ax = 0; ax < options.actions.length; ax++) {
-                var action = options.actions[ax];
-                if (action.funcName) {
-                    tBody += `<a href="#" onclick="cx.clientExec('${action.funcName}', ${objects[i][options.primaryKey]})" >${action.label}</a>`;    
-                } else if (action.link) {
-                    tBody += `<a href="${action.link}" target="${action.target}" >${action.label}</a>`;    
-                }
-                
-            }
-            tBody += '</td>';
-        }
+        //
+        if (options.actionsShowFirst) { tBody += renderActions(objects[i], options); }
+
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellValue = col.value(objects[i]);
@@ -133,6 +144,10 @@ function renderTableBody(objects, options) {
             }
             tBody += `<td style="width: ${col.width}; text-align: ${col.align};">${cellValue}</td>`;
         }
+
+        //
+        if (!options.actionsShowFirst) { tBody += renderActions(objects[i], options); }
+        
         tBody += '</tr>';
     }
     tBody += '</tbody>';

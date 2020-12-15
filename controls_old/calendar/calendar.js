@@ -5,6 +5,7 @@ const _fs = require('fs');
 const _path = require('path');
 const _h = require('handlebars');
 
+
 function _render(options) {
     if (!options.date) { options.date = _core.date.format({ inverted: true }); }
     if (!options.flags) { options.flags = []; }
