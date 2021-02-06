@@ -1,10 +1,12 @@
 'use strict';
 
 const _core = require('cx-core');
+//const _cored = require('cx-core/core/cx-core-date');
 const _fs = require('fs');
 const _path = require('path');
 const _h = require('handlebars');
 
+const _monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 function _render(options) {
     if (!options.date) { options.date = _core.date.format({ inverted: true }); }
@@ -12,15 +14,18 @@ function _render(options) {
     var y = parseInt(options.date.split('-')[0]);
     var m = parseInt(options.date.split('-')[1]);
 
-    var month = (m - 1);
+    // get month start
     var startDate = new Date(y, (m - 1), 1);
-    while (startDate.getDay() != 1) {
-        startDate = startDate.addDays(-1);
-    }
-    if (startDate.getMonth() < month) { month++; }
+    // get month end
+    var endDate = startDate.addMonths(1).addDays(-1);
+    // start from 1st monday
+    while (startDate.getDay() != 1) { startDate = startDate.addDays(-1); }
+    // end at last sunday
+    while (endDate.getDay() != 0) { endDate = endDate.addDays(1); }
+    
 
     var html = ''; var c = 0;
-    while (startDate.getMonth() < month) {
+    while (startDate <= endDate) {
         html += '<tr>';
         for (var dx = 0; dx < 7; dx++) {
             // console.log(dx);
@@ -44,6 +49,7 @@ function _render(options) {
         if (c > 34) { break; }
     }
     options.calendar = html;
+    options.monthName = _monthNames[m - 1];
 
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'calendar.hbs'), 'utf8'));
     return hTmpl(options);
