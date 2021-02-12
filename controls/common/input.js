@@ -94,7 +94,7 @@ function formatValue(options) {
         if (!options.value) { return; }
         if (options.value.constructor.name === 'Date') {
             options.htmlType = (options.value.hasTime()) ? 'datetime-local' : 'date';
-            options.value = _core.date.format({ date: options.value, inverted: true, showTime: options.value.hasTime(), dateTimeSep: 'T' }); 
+            options.value = _core.date.format({ date: options.value, inverted: true, showTime: options.value.hasTime(), dateTimeSep: ' ' }); 
         }
         
     } else if (options.type == _declarations.ControlType.CHECK) {
