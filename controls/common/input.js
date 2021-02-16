@@ -108,11 +108,15 @@ function formatValue(options) {
         } else {
             options.value = null;
         }
-    } else if (options.type == _declarations.ControlType.TEXT) {
+    } else if (options.type == _declarations.ControlType.TEXT || options.type == _declarations.ControlType.TEXT_AREA) {
         if (options.value && options.value.length > 100) {
             options.type = _declarations.ControlType.TEXT_AREA
             options.rows = 7;
             //options.rows = 5;
+        }
+        if (options.readOnly && options.value) {
+            options.value = options.value.replaceAll(' ', '&nbsp;');
+            options.value = options.value.replaceAll('\n', '<br />');
         }
     }
 
