@@ -19,7 +19,7 @@ class TableColumn {
         this.#o = options;
         this.#name = options.name || options;
         this.#type = options.type || '';
-        this.#title = options.title || '';
+        this.#title = options.title || this.#name || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
@@ -63,7 +63,7 @@ function formatColumns(objects, options) {
     if (!options.columns || options.columns.length == 0) {
         options.columns = [];
         //_core.list.each(objects, function (object) {
-            var keys = _core.getAllKeys(objects[0], 2);
+            var keys = _core.getAllKeys(objects[0], 3);
             keys.forEach(k => {
                 if (k === 'constructor') { return; }
                 if (_core.isObj(objects[k])) { return; }
@@ -162,7 +162,7 @@ function getHighlightStyle(object, options) {
         if (h.op == '=') {
             if (rawVal == h.value) {
                 style = h.style
-                break;
+                //break;
             }
         }
     }
