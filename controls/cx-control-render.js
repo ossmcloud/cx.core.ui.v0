@@ -34,6 +34,7 @@ function _renderControl(options, objects) {
             renderedControls += '>';
             //
             for (var cx = 0; cx < controlArray.length; cx++) {
+                if (!controlArray[cx]) { continue; }
                 if (!controlArray[cx].column) { controlArray[cx].column = 1; }
                 if (controlArray[cx].column == colNo) {
                     if (controlArray[cx].html) {
