@@ -3,6 +3,7 @@
 const _declarations = require('./cx-core-ui-declarations');
 const _form = require('./form/form');
 const _controls = require('./controls/cx-control-render');
+const _calendarEx = require('./controls/calendar/calendar');
 
 // TODO: CX-UI: Refactor
 const _calendar = require('./controls_old/calendar/calendar');
@@ -30,5 +31,9 @@ module.exports = {
     calendar: function (options) {
         if (!options) { options = {}; }
         return _calendar.render(options);
+    },
+    calendarEx: function (options) {
+        if (!options) { options = {}; }
+        return _calendarEx.render(options);
     },
 }
