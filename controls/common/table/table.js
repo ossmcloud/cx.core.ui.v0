@@ -19,7 +19,7 @@ class TableColumn {
         this.#o = options;
         this.#name = options.name || options;
         this.#type = options.type || '';
-        this.#title = options.title || this.#name || '';
+        this.#title = options.title || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
@@ -108,7 +108,11 @@ function renderActions(object, options) {
             } else if (action.link) {
                 var link = action.link;
                 if (link[link.length - 1] == '=') {
-                    link += object[options.primaryKey];
+                    if (action.linkParamField) {
+                        link += object[action.linkParamField];   
+                    } else {
+                        link += object[options.primaryKey];
+                    }
                 }
                 tBody += `<a class="jx-table-action" href="${link}" target="${action.target}" >${action.label}</a>`;
             }
