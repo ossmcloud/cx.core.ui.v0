@@ -54,6 +54,9 @@ class TableColumn {
             if (val.constructor.name === 'Date') {
                 val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
             }
+            if (val.constructor.name === 'Number') {
+                val = val.toLocaleString();
+            }
         }
         return val;
     }
