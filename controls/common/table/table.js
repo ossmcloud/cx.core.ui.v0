@@ -14,6 +14,7 @@ class TableColumn {
     #align = '';
     #width = '';
     #lookUps = [];
+    #dataHidden = false;
     constructor(options) {
         if (!options) { options = {}; }
         this.#o = options;
@@ -23,6 +24,7 @@ class TableColumn {
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
+        this.#dataHidden = options.dataHidden || null;
         
     }
 
@@ -30,6 +32,7 @@ class TableColumn {
     get type() { return this.#type; }
     get title() { return this.#title; }
     get align() { return this.#align; }
+    get dataHidden() { return this.#dataHidden; }
     get width() {
         return this.#width;
     } set width(val) {
@@ -90,6 +93,7 @@ function renderTableHeader(objects, options) {
     if (options.actions && options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
+        if (col.dataHidden) { continue; }
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         var textAlign = ` style="text-align: ${col.align};"`; 
@@ -129,13 +133,19 @@ function renderTableBody(objects, options) {
     var tBody = '<tbody>';
     for (var i = 0; i < objects.length; i++) {
         var highlightStyle = getHighlightStyle(objects[i], options);
+       
+        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" [$DATA$]>`;;
         
-        tBody += `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}">`;
         //
-        if (options.actionsShowFirst) { tBody += renderActions(objects[i], options); }
+        if (options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
 
+        var dataAttr = '';
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
+            if (col.dataHidden) {
+                dataAttr += ` data-${col.dataHidden}="${col.value(objects[i])}"`;
+                continue;
+            }
             var cellValue = col.value(objects[i]);
             if (col.type == 'check') {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
@@ -149,13 +159,16 @@ function renderTableBody(objects, options) {
                     col.width = '50px';
                 }
             }
-            tBody += `<td style="width: ${col.width}; text-align: ${col.align};">${cellValue}</td>`;
+            tRow += `<td style="width: ${col.width}; text-align: ${col.align};">${cellValue}</td>`;
         }
 
+        tRow = tRow.replace('[$DATA$]', dataAttr);
+
         //
-        if (!options.actionsShowFirst) { tBody += renderActions(objects[i], options); }
+        if (!options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
         
-        tBody += '</tr>';
+        tRow += '</tr>';
+        tBody += tRow;
     }
     tBody += '</tbody>';
     return tBody;

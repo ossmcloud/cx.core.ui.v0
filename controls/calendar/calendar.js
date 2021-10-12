@@ -39,19 +39,29 @@ function _render(options) {
             
             var date = _core.date.format({ date: startDate, inverted: true });
             html += `<td data-value="${date}" `;
+
+            var cellValue = startDate.getDate();
+            var paddingStyle = '';
+            var flag = _core.list.findInArray(options.flags, "d", date);
+            if (flag) {
+                cellValue = `<a title="${flag.toolTip}" href="${flag.link}">${startDate.getDate()}</a>`;
+                paddingStyle = ' style="padding: 0px;"';
+            }
+
             if (startDate.getMonth() == (m - 1) && startDate < new Date()) {
-                var flag = _core.list.findInArray(options.flags, "d", date);
+                //var flag = _core.list.findInArray(options.flags, "d", date);
                 if (flag) {
-                    html += `class="jx-calendar-current-on" style="padding: 0px;"><a title="${flag.toolTip}" target="_blank" href="${flag.link}">${startDate.getDate()}</a>`;
+                    html += `class="jx-calendar-current-on" ${paddingStyle}>`;
+                    //cellValue ='<a title="${flag.toolTip}" href="${flag.link}">${startDate.getDate()}</a>'
                 } else {
-                    html += `class="jx-calendar-current-off" title="no data for this day">${startDate.getDate()}`;
+                    html += `class="jx-calendar-current-off" ${paddingStyle} title="no data for this day">`;
                 }
             } else if (startDate >= new Date()) {
-                html += `class="jx-calendar-future" title="future..." >${startDate.getDate()}`;
+                html += `class="jx-calendar-future" ${paddingStyle} title="future..." >`;
             } else {
-                html += `class="jx-calendar-past">${startDate.getDate()}`;
+                html += `class="jx-calendar-past"  ${paddingStyle}>`;
             }
-            html += '</td>';
+            html += (cellValue + '</td>');
             startDate = startDate.addDays(1);
             c++;
         }
