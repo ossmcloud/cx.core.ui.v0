@@ -62,5 +62,6 @@ function _renderControl(options, objects) {
 
 
 module.exports = {
+    CtrlType: _declarations.ControlType,
     render: _renderControl,
 }

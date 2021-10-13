@@ -18,7 +18,9 @@
             {{/each}}
         </div>
         <div id="{{id}}_count_container" class="jx-table-count-container">
+            {{#unless noCount}}
             {{count}} item(s)
+            {{/unless}}
         </div>
         {{#if quickSearch}}
         <div id="{{id}}_search_container" class="jx-table-search-container">
