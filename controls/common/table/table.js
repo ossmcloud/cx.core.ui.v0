@@ -49,7 +49,7 @@ class TableColumn {
     get lookUps() { return this.#lookUps; }
 
 
-    value(object) {
+    value(object, raw) {
         var val = object[this.name];
         if (val === null) { return '[NULL]'; }
         if (val === undefined) { return '[UNKNOWN]'; }
@@ -62,11 +62,13 @@ class TableColumn {
             }
 
         } else {
-            if (val.constructor.name === 'Date') {
-                val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
-            }
-            if (val.constructor.name === 'Number') {
-                val = val.toLocaleString();
+            if (!raw) {
+                if (val.constructor.name === 'Date') {
+                    val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
+                }
+                if (val.constructor.name === 'Number') {
+                    val = val.toLocaleString();
+                }
             }
         }
         return val;
@@ -152,7 +154,7 @@ function renderTableBody(objects, options) {
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             if (col.dataHidden) {
-                dataAttr += ` data-${col.dataHidden}="${col.value(objects[i])}"`;
+                dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
             }
             var cellValue = col.value(objects[i]);
