@@ -114,7 +114,7 @@ function formatValue(options) {
             options.rows = 7;
             //options.rows = 5;
         }
-        if (options.readOnly && options.value) {
+        if (options.readOnly && options.value && options.value.replaceAll) {
             options.value = options.value.replaceAll(' ', '&nbsp;');
             options.value = options.value.replaceAll('\n', '<br />');
         }

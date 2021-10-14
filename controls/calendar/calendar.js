@@ -20,8 +20,8 @@ function _render(options) {
     var d = parseInt(options.date.split('-')[2]);
     var theDate = new Date(y, (m - 1), d);
 
-    if (isNaN(y) || y < 1900) { y = (new Date().getFullYear()+1) };
-    if (isNaN(m) || m < 1 || m > 12) { m = (new Date().getMonth()+1) };
+    if (isNaN(y) || y < 1900) { y = (new Date().getFullYear() + 1) };
+    if (isNaN(m) || m < 1 || m > 12) { m = (new Date().getMonth() + 1) };
 
     // get month start
     var startDate = new Date(y, (m - 1), 1);
@@ -36,7 +36,7 @@ function _render(options) {
     while (startDate <= endDate) {
         html += '<tr>';
         for (var dx = 0; dx < 7; dx++) {
-            
+
             var date = _core.date.format({ date: startDate, inverted: true });
             html += `<td data-value="${date}" `;
 
@@ -47,8 +47,10 @@ function _render(options) {
                 cellValue = `<a title="${flag.toolTip}" href="${flag.link}">${startDate.getDate()}</a>`;
                 paddingStyle = ' style="padding: 0px;"';
             }
-
-            if (startDate.getMonth() == (m - 1) && startDate < new Date()) {
+            if (date == options.date) {
+                html += `class="jx-calendar-current-on" style="background-color: var(--scrollbar-thumb); color: var(--header-color);">`;
+                cellValue = startDate.getDate();
+            } else if (startDate.getMonth() == (m - 1) && startDate < new Date()) {
                 //var flag = _core.list.findInArray(options.flags, "d", date);
                 if (flag) {
                     html += `class="jx-calendar-current-on" ${paddingStyle}>`;
@@ -76,7 +78,7 @@ function _render(options) {
     options.dataType = 'date';
 
     if (options.navigation) {
-        
+
         options.prevButton = `<div id="${options.id}_btn__prev" class="jx-calendar-nav jx-calendar-nav-prev">${options.navigation.prevText || ''}</div>`;
 
 
@@ -84,7 +86,7 @@ function _render(options) {
         options.nextButton = `<div id="${options.id}_btn__next" class="jx-calendar-nav jx-calendar-nav-next">${options.navigation.nextText || ''}</div>`;
         // }
     }
-    
+
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'calendar.hbs'), 'utf8'));
     options.content = hTmpl(options);
     return _controlBase.render(options);
