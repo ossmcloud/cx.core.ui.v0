@@ -69,6 +69,11 @@ class TableColumn {
                 if (val.constructor.name === 'Number') {
                     val = val.toLocaleString();
                 }
+            } else {
+                if (_core.isObj(val) || Array.isArray(val)) {
+                    val = JSON.stringify(val);
+                    val = escape(val);
+                }
             }
         }
         return val;
