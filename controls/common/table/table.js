@@ -169,7 +169,7 @@ function renderTableBody(objects, options) {
                 if (col.input) {
                     cellValue = objects[i][col.name];
                     if (col.input.type == _declarations.ControlType.NUMERIC) {
-                        cellValue = `<input id="${col.input.id + j}" name="${col.input.id + j}" class="jx-control" type="number" data-cx-field-value="${cellValue}" value="${cellValue}" style="text-align: right;" />`;
+                        cellValue = `<input id="${col.input.id + j}" name="${col.input.id + j}" class="jx-control" type="number" data-cx-field-value="${cellValue.toFixed(2)}" value="${cellValue.toFixed(2)}" style="text-align: right;" />`;
                     }
                 }
 
