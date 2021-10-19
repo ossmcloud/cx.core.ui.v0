@@ -21,10 +21,13 @@ class TableColumn {
     #fontSize = null;
     constructor(options) {
         if (!options) { options = {}; }
+        if (options.constructor.name == 'String') {
+            options = { name: options };
+        }
         this.#o = options;
         this.#name = options.name || options;
         this.#type = options.type || '';
-        this.#title = options.title || '';
+        this.#title = options.title || options.name || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
@@ -93,7 +96,7 @@ function formatColumns(objects, options) {
         });
         //});
     }
-    var formattedColumns = [];
+    var formattedColumns =  [];
     _core.list.each(options.columns, function (column) {
         var formattedColumn = new TableColumn(column);
         if (formattedColumn.name == 'rowver' || formattedColumn.name == 'rowversion') { return; }
