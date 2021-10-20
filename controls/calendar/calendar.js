@@ -44,8 +44,8 @@ function _render(options) {
             var paddingStyle = '';
             var flag = _core.list.findInArray(options.flags, "d", date);
             if (flag) {
-                cellValue = `<a title="${flag.toolTip}" href="${flag.link}">${startDate.getDate()}</a>`;
-                paddingStyle = ' style="padding: 0px;"';
+                cellValue = `<a title="${flag.toolTip}" style="${flag.style}" href="${flag.link}">${startDate.getDate()}</a>`;
+                paddingStyle = ' style="padding: 0px; ' + flag.style + '"';
             }
             if (date == options.date) {
                 html += `class="jx-calendar-current-on" style="background-color: var(--scrollbar-thumb); color: var(--header-color);">`;
