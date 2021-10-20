@@ -21,6 +21,9 @@
             {{#unless noCount}}
             {{count}} item(s)
             {{/unless}}
+            {{#if customCount}}
+            {{{customCount}}}
+            {{/if}}
         </div>
         {{#if quickSearch}}
         <div id="{{id}}_search_container" class="jx-table-search-container">
