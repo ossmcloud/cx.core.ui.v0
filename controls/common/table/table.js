@@ -96,7 +96,7 @@ function formatColumns(objects, options) {
         });
         //});
     }
-    var formattedColumns =  [];
+    var formattedColumns = [];
     _core.list.each(options.columns, function (column) {
         var formattedColumn = new TableColumn(column);
         if (formattedColumn.name == 'rowver' || formattedColumn.name == 'rowversion') { return; }
@@ -229,7 +229,7 @@ function render(options, objects) {
     options.count = objects.length;
     //
     options.fixHeadClass = (options.fixHeader === true) ? 'jx-fixhead' : '';
-    options.fixHeadClassNoBorder = (options.fixHeader === true) ? 'jx-fixhead-noborder' : '';
+    options.fixHeadClassNoBorder = (options.fixHeader === true || options.noBorder === true) ? 'jx-fixhead-noborder' : '';
     options.classTblContainer = (options.fixHeader === true) ? 'jx-table-container-fixhead' : 'jx-table-container';
     options.cssTitle = 'jx-table-title';
     if (options.fixHeader) { options.cssTitle += '-fixhead'; }

@@ -108,7 +108,7 @@ function render(objects, options) {
     options.count = objects.length;
     //
     options.fixHeadClass = (options.fixHeader === true) ? 'cx-fixhead' : '';
-    options.fixHeadClassNoBorder = (options.fixHeader === true) ? 'cx-fixhead-noborder' : '';
+    options.fixHeadClassNoBorder = (options.fixHeader === true || options.noBorder) ? 'cx-fixhead-noborder' : '';
     //
     formatColumns(objects, options);
     // 
