@@ -32,7 +32,7 @@ function _render(options) {
     // end at last sunday
     while (endDate.getDay() != 0) { endDate = endDate.addDays(1); }
 
-    var html = ''; var c = 0;
+    var html = ''; var c = 0; var today = Date.today();
     while (startDate <= endDate) {
         html += '<tr>';
         for (var dx = 0; dx < 7; dx++) {
@@ -41,28 +41,40 @@ function _render(options) {
             html += `<td data-value="${date}" `;
 
             var cellValue = startDate.getDate();
-            var paddingStyle = '';
+            var paddingStyle = ''; var toolTip = '';
+
             var flag = _core.list.findInArray(options.flags, "d", date);
             if (flag) {
                 cellValue = `<a title="${flag.toolTip}"  href="${flag.link}">${startDate.getDate()}</a>`;
                 paddingStyle = ' style="padding: 0px; ' + flag.style + '"';
-            }
-            if (date == options.date) {
-                html += `class="jx-calendar-current-on" style="background-color: var(--scrollbar-thumb); color: var(--header-color);">`;
-                cellValue = startDate.getDate();
-            } else if (startDate.getMonth() == (m - 1) && startDate < new Date()) {
-                //var flag = _core.list.findInArray(options.flags, "d", date);
-                if (flag) {
-                    html += `class="jx-calendar-current-on" ${paddingStyle}>`;
-                    //cellValue ='<a title="${flag.toolTip}" href="${flag.link}">${startDate.getDate()}</a>'
-                } else {
-                    html += `class="jx-calendar-current-off" ${paddingStyle} title="no data for this day">`;
-                }
-            } else if (startDate >= new Date()) {
-                html += `class="jx-calendar-future" ${paddingStyle} title="future..." >`;
             } else {
-                html += `class="jx-calendar-past"  ${paddingStyle}>`;
+                if (startDate >= today) {
+                    toolTip = 'future date';
+                } else {
+                    toolTip = 'no data available';
+                    if (options.noFlagStyle) {
+                        paddingStyle = ' style="' + options.noFlagStyle + '"';
+                    }
+                }
             }
+
+            if (date == options.date) {
+                // highlight selected date
+                html += `class="jx-calendar-current-on" style="background-color: var(--scrollbar-thumb); color: var(--header-color);"`;
+                cellValue = startDate.getDate();
+            } else if (startDate.getMonth() == (m - 1) && startDate < today) {
+                // current month
+                if (flag) {
+                    html += `class="jx-calendar-current-on" ${paddingStyle}`;
+                } else {
+                    html += `class="jx-calendar-current-off" ${paddingStyle}`;
+                }
+            } else if (startDate >= today) {
+                html += `class="jx-calendar-future" ${paddingStyle}`;
+            } else {
+                html += `class="jx-calendar-past"  ${paddingStyle}`;
+            }
+            html += ` title="${toolTip}">`;
             html += (cellValue + '</td>');
             startDate = startDate.addDays(1);
             c++;
