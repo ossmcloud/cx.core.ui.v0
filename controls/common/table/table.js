@@ -28,6 +28,7 @@ class TableColumn {
         this.#name = options.name || options;
         this.#type = options.type || '';
         this.#title = options.title || options.name || '';
+        //this.#title = options.title || '';
         this.#align = options.align || 'left';
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
@@ -54,8 +55,8 @@ class TableColumn {
 
     value(object, raw) {
         var val = object[this.name];
-        if (val === null) { return '[NULL]'; }
-        if (val === undefined) { return '[UNKNOWN]'; }
+        if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[NULL]</span>'; }
+        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[UNKNOWN]</span>'; } 
         if (this.lookUps.length > 0) {
             for (var lx = 0; lx < this.lookUps.length; lx++) {
                 if (this.lookUps[lx].value == val) {
