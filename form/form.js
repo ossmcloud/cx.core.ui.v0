@@ -15,11 +15,13 @@ function _render(options, record) {
     options.width = 'auto';
     options.type = 'form';
 
+    options.record = _core.text.toBase64(JSON.stringify((record.toObject) ? record.toObject() : record));
+
     if (options.dialog == true) {
         if (!options.data) { options.data = []; }
         options.data.push({ name: 'dialog', value: true });
     }
-    
+
 
     options.fieldHtml = '';
     for (var fx = 0; fx < options.fields.length; fx++) {
@@ -31,18 +33,18 @@ function _render(options, record) {
     if (!options.buttons) { options.buttons = []; }
 
     options.showButtons = [];
-    for (var bx = 0; bx < options.buttons.length; bx++){
+    for (var bx = 0; bx < options.buttons.length; bx++) {
         var btn = options.buttons[bx];
-        if (!btn.mode) { btn.mode = 'both' } 
+        if (!btn.mode) { btn.mode = 'both' }
         if (
             (options.editMode && (btn.mode == 'both' || btn.mode == 'edit')) ||
             (!options.editMode && (btn.mode == 'both' || btn.mode == 'view'))
         ) {
             options.showButtons.push(btn);
         }
-        
+
     }
-    
+
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'form.hbs'), 'utf8'));
     options.content = hTmpl(options);
     return _controlBase.render(options);
@@ -52,7 +54,7 @@ function _renderField(field, record) {
     var html = '';
 
     html += _control.render(field, record);
-   
+
 
     return html;
 }

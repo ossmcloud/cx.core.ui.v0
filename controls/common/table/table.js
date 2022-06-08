@@ -130,6 +130,11 @@ function renderActions(object, options) {
         tBody += '<td style="text-align: center; width: 50px;">';
         for (var ax = 0; ax < options.actions.length; ax++) {
             var action = options.actions[ax];
+            if (options.allowActionCondition) {
+                if (!options.allowActionCondition(action, object)) {
+                    continue;
+                }
+            }
             if (action.funcName) {
                 tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]})" >${action.label}</a>`;
             } else if (action.link) {

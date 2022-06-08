@@ -1,23 +1,23 @@
 {
-  "name": "cx-core-ui",
-  "version": "1.0.0",
-  "description": "",
-  "main": "cx-core-ui.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ossmcloud/cx.core.ui.v0.git"
-  },
-  "author": "peppo",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ossmcloud/cx.core.ui.v0/issues"
-  },
-  "homepage": "https://github.com/ossmcloud/cx.core.ui.v0#readme",
-  "dependencies": {
-    "cx-core": "git+https://github.com/ossmcloud/cx.core.v0.git",
-    "handlebars": "^4.7.6"
-  }
+    "name": "cx-core-ui",
+    "version": "1.0.0",
+    "description": "",
+    "main": "cx-core-ui.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ossmcloud/cx.core.ui.v0.git"
+    },
+    "author": "peppo",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ossmcloud/cx.core.ui.v0/issues"
+    },
+    "homepage": "https://github.com/ossmcloud/cx.core.ui.v0#readme",
+    "dependencies": {
+        "cx-core": "file:../cx.core.v0",
+        "handlebars": "^4.7.6"
+    }
 }
