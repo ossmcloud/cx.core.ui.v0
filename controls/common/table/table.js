@@ -56,7 +56,7 @@ class TableColumn {
     value(object, raw) {
         var val = object[this.name];
         if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[NULL]</span>'; }
-        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[UNKNOWN]</span>'; } 
+        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[UNKNOWN]</span>'; }
         if (this.lookUps.length > 0) {
             for (var lx = 0; lx < this.lookUps.length; lx++) {
                 if (this.lookUps[lx].value == val) {
@@ -154,7 +154,7 @@ function renderTableBody(objects, options) {
     for (var i = 0; i < objects.length; i++) {
         var highlightStyle = getHighlightStyle(objects[i], options);
 
-        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" [$DATA$]>`;;
+        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" [$DATA$]>`;
 
         //
         if (options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
@@ -183,7 +183,14 @@ function renderTableBody(objects, options) {
                 if (col.name == options.primaryKey) {
                     var link = options.path + '?id=' + cellValue;
                     cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
-                    if (options.allowEdit) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
+                    if (options.allowEditCondition) {
+                        if (options.allowEditCondition(objects[i])) {
+                            cellValue += '<a href="' + link + '&e=T">edit</a>';
+                        }
+
+                    } else if (options.allowEdit) {
+                        cellValue += '<a href="' + link + '&e=T">edit</a>';
+                    }
                     col.width = '50px';
                 }
             }
