@@ -17,12 +17,12 @@
     {{/if}}
     {{! now add the options }}
     {{#each options as | option |}}
-        <option value="{{option.value}}"
+        <option value="{{option.value}}" data-object="{{option.object}}""
             {{! this is a custom helper}}
             {{#if_val option.value}}
                 selected
             {{/if_val}}
-        >{{this.text}}</option>
+        >{{{option.text}}}</option>
     {{/each}}
 </select>
 {{/if}}
