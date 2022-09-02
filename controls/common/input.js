@@ -62,20 +62,23 @@ function detectControlType(options, objects) {
     if (options.inputType) { return options.inputType; }
     if (Array.isArray(options.items)) { return _declarations.ControlType.DROPDOWN; }
     if (Array.isArray(options.options) || Array.isArray(options.lookUps)) { return _declarations.ControlType.SELECT; }
-    if (Array.isArray(objects) || Array.isArray(objects.records) || Array.isArray(options.records)) { return _declarations.ControlType.TABLE; }
 
-    if (objects.getFieldDataType) {
-        options.dataType = objects.getFieldDataType(options.name);
-        if (options.dataType == 'varchar') { return _declarations.ControlType.TEXT; }
-        if (options.dataType == 'int' || options.dataType == 'bigint' || options.dataType == 'money') { return _declarations.ControlType.NUMERIC; }
-        if (options.dataType == 'datetime') { return _declarations.ControlType.DATE; }
-        if (options.dataType == 'date') { return _declarations.ControlType.DATE; }
-        if (options.dataType == 'bit') { return _declarations.ControlType.CHECK; }
-        //
-        if (options.dataType) {
-            options.dataType = options.dataType;
+    if (objects) {
+        if (Array.isArray(objects) || Array.isArray(objects.records) || Array.isArray(options.records)) { return _declarations.ControlType.TABLE; }
+
+        if (objects.getFieldDataType) {
+            options.dataType = objects.getFieldDataType(options.name);
+            if (options.dataType == 'varchar') { return _declarations.ControlType.TEXT; }
+            if (options.dataType == 'int' || options.dataType == 'bigint' || options.dataType == 'money') { return _declarations.ControlType.NUMERIC; }
+            if (options.dataType == 'datetime') { return _declarations.ControlType.DATE; }
+            if (options.dataType == 'date') { return _declarations.ControlType.DATE; }
+            if (options.dataType == 'bit') { return _declarations.ControlType.CHECK; }
+            //
+            if (options.dataType) {
+                options.dataType = options.dataType;
+            }
+
         }
-
     }
 
     if (options.value) {
@@ -138,7 +141,7 @@ function _render(options, objects) {
     }
 
     if (options.type == _declarations.ControlType.DROPDOWN) { return _dropDown.render(options); } 
-    if (options.type == _declarations.ControlType.TABLE) { return _table.render(options, options.records || objects); }
+    if (options.type == _declarations.ControlType.TABLE) { return _table.render(options, options.records || objects, this); }
 
     // if (options.type == _declarations.ControlType.DATE && !options.htmlType) {
     //     options.htmlType = 'date';

@@ -7,6 +7,7 @@ const _core = require('cx-core');
 const _controlBase = require('../../base/controlBase/controlBase');
 const _declarations = require('../../../cx-core-ui-declarations');
 
+var _input = null;
 
 class TableColumn {
     #o = null;
@@ -113,7 +114,9 @@ function renderTableHeader(objects, options) {
     if (options.actions && options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
-        if (col.dataHidden) { continue; }
+        if (col.dataHidden || col.hide) {
+            continue;
+        }
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         var textAlign = ` style="text-align: ${col.align};"`;
@@ -176,25 +179,18 @@ function renderTableBody(objects, options) {
             var cellValue = col.value(objects[i]);
             if (col.type == 'check') {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
-            } else if (col.type == 'input') {
-                if (col.input) {
-                    cellValue = objects[i][col.name];
-                    if (col.input.type == _declarations.ControlType.NUMERIC) {
-                        cellValue = `<input id="${col.input.id + j}" name="${col.input.id + j}" class="jx-control" type="number" data-cx-field-value="${cellValue.toFixed(2)}" value="${cellValue.toFixed(2)}" style="text-align: right;" />`;
-                    }
-                }
+
+            } else if (col.input) {
+                col.input.id = i + '_' + col.name;
+                col.input.value = objects[i][col.name];
+                cellValue = _input.render(col.input);
 
             } else {
-
-                //
                 if (col.name == options.primaryKey) {
                     var link = options.path + '?id=' + cellValue;
                     cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
                     if (options.allowEditCondition) {
-                        if (options.allowEditCondition(objects[i])) {
-                            cellValue += '<a href="' + link + '&e=T">edit</a>';
-                        }
-
+                        if (options.allowEditCondition(objects[i])) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
                     } else if (options.allowEdit) {
                         cellValue += '<a href="' + link + '&e=T">edit</a>';
                     }
@@ -233,8 +229,9 @@ function getHighlightStyle(object, options) {
 
 
 
-function render(options, objects) {
+function render(options, objects, input) {
     //
+    _input = input;
     if (objects && objects.records) { objects = objects.records; }
     if (!objects || objects.length === undefined) { throw new Error('Argument objects must be a list!'); }
     if (!options) { options = {}; }
