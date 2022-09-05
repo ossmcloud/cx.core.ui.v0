@@ -1,8 +1,8 @@
 {{#if readOnly}}
-<span id="{{id}}" name="{{id}}" class="jx-inlineText">{{{value}}}</span>
+<span id="{{id}}" name="{{name}}" class="jx-inlineText">{{{value}}}</span>
 {{else}}
 <textarea
-    id="{{id}}" name="{{id}}" class="jx-control" type="text" 
+    id="{{id}}" name="{{name}}" class="jx-control" type="text" 
     rows="{{rows}}" cols="{{cols}}"
     {{#if min}} minlength="{{min}}" {{/if}}
     {{#if max}} maxlength="{{max}}" {{/if}}

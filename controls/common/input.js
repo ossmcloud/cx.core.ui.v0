@@ -23,6 +23,7 @@ function formatOptions(options) {
    
     // TODO: should we generate some unique ID
     if (!options.id) { options.id = 'cx_control'; }
+    if (!options.name) { options.name = options.id; }
 
     //
     if (options.hidden) {

@@ -1,8 +1,8 @@
 {{#if readOnly}}
-<span id="{{id}}" name="{{id}}" class="jx-inlineText">{{{value}}}</span>
+<span id="{{id}}" name="{{name}}" class="jx-inlineText">{{{value}}}</span>
 {{else}}
 <input
-    id="{{id}}" name="{{id}}" class="jx-control jx-control-number" type="number" value="{{value}}" step="any"
+    id="{{id}}" name="{{name}}" class="jx-control jx-control-number" type="number" value="{{value}}" step="any"
     {{#if width}} {{/if}}
     {{#if min}} min="{{min}}" {{/if}}
     {{#if max}} max="{{max}}" {{/if}}

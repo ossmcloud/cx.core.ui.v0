@@ -181,6 +181,7 @@ function renderTableBody(objects, options) {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
             } else if (col.input) {
+                col.input.name = col.name;
                 col.input.id = i + '_' + col.name;
                 col.input.value = objects[i][col.name];
                 cellValue = _input.render(col.input);
