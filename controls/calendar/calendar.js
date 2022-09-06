@@ -60,7 +60,7 @@ function _render(options) {
 
             if (date == options.date) {
                 // highlight selected date
-                html += `class="jx-calendar-current-on" style="background-color: var(--scrollbar-thumb); color: var(--header-color);"`;
+                html += `class="jx-calendar-current-on jx-calendar-current-now" style="${flag.style}"`;
                 cellValue = startDate.getDate();
             } else if (startDate.getMonth() == (m - 1) && startDate < today) {
                 // current month

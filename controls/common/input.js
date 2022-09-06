@@ -135,6 +135,9 @@ function _render(options, objects) {
     options.type = detectControlType(options, objects);
     formatValue(options);
     
+    if (options.type == _declarations.ControlType.CHECK) {
+        options.minHeight = '50px';
+    }
     //
     if (options.type == _declarations.ControlType.SELECT) {
         if (!options.options && options.items) { options.options = options.items; }

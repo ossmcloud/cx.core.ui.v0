@@ -18,7 +18,7 @@
                     {{/if}}
                     {{else}}
                     {{#if allowEdit}}
-                    <input class="btn jx-btn-inline" type="button" value="Edit" onclick="document.location.href='{{path}}?id={{recordId}}&e=T';" />
+                    <input class="btn jx-btn-inline" type="button" value="Edit" onclick="document.location.href='{{path}}{{pathArgSep}}id={{recordId}}&e=T';" />
                     {{/if}}
                     {{/if}}
                 </td>

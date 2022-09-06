@@ -4,13 +4,14 @@
 </label>
 <span id="{{id}}" name="{{name}}" class="jx-inlineText">{{value}}</span>
 {{else}}
+<label onclick="$(this).prev().click();" style="display: block; padding-top: 3px;">
+    {{labelCheckBox}}
+</label>
 <input
     id="{{id}}" name="{{name}}" class="jx-control" type="checkbox" value="{{value}}" 
     {{#if value}} checked  {{/if}}
     {{#if width}} style="width: 30px;" {{/if}}
     {{#if disabled}} disabled  {{/if}}
 />
-<label onclick="$(this).prev().click();">
-{{labelCheckBox}}
-</label>
+
 {{/if}}

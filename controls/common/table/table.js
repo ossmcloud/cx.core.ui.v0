@@ -20,6 +20,7 @@ class TableColumn {
     #dataHidden = false;
     #input = null;
     #fontSize = null;
+    #formatMoney = null;
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -36,7 +37,7 @@ class TableColumn {
         this.#dataHidden = options.dataHidden || null;
         this.#input = options.input || null;
         this.#fontSize = options.fontSize || null;
-
+        this.#formatMoney = options.formatMoney;
     }
 
     get name() { return this.#name; }
@@ -72,7 +73,7 @@ class TableColumn {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
                 if (val.constructor.name === 'Number') {
-                    val = val.toLocaleString();
+                    if (this.#formatMoney) { val = val.formatMoney(); }                    
                 }
             } else {
                 if (_core.isObj(val) || Array.isArray(val)) {
@@ -188,14 +189,16 @@ function renderTableBody(objects, options) {
 
             } else {
                 if (col.name == options.primaryKey) {
-                    var link = options.path + '?id=' + cellValue;
-                    cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
-                    if (options.allowEditCondition) {
-                        if (options.allowEditCondition(objects[i])) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
-                    } else if (options.allowEdit) {
-                        cellValue += '<a href="' + link + '&e=T">edit</a>';
+                    if (options.path) {
+                        var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
+                        cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
+                        if (options.allowEditCondition) {
+                            if (options.allowEditCondition(objects[i])) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
+                        } else if (options.allowEdit) {
+                            cellValue += '<a href="' + link + '&e=T">edit</a>';
+                        }
+                        col.width = '50px';
                     }
-                    col.width = '50px';
                 }
             }
             tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')}">${cellValue}</td>`;

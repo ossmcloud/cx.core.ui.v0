@@ -23,7 +23,8 @@ function _render(options, record) {
     }
 
 
-    options.fieldHtml = '';
+    options.fieldHtml = ''
+    if (!options.fields) { options.fields = []; }
     for (var fx = 0; fx < options.fields.length; fx++) {
         var field = options.fields[fx];
         field.readOnly = !options.editMode;
@@ -45,6 +46,11 @@ function _render(options, record) {
 
     }
 
+    options.pathArgSep = '';
+    if (options.path) {
+        options.pathArgSep = (options.path.indexOf('?') < 0) ? '?' : '&';
+    }
+    
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'form.hbs'), 'utf8'));
     options.content = hTmpl(options);
     return _controlBase.render(options);
