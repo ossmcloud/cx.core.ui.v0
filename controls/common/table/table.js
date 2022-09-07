@@ -226,6 +226,11 @@ function getHighlightStyle(object, options) {
                 style = h.style
                 //break;
             }
+        } else if (h.op == '!=') {
+            if (rawVal != h.value) {
+                style = h.style
+                //break;
+            }
         }
     }
     return style;
