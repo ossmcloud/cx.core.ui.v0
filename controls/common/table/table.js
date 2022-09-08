@@ -222,15 +222,17 @@ function getHighlightStyle(object, options) {
         var h = options.highlights[hx];
         var rawVal = object[h.column];
         if (h.op == '=') {
-            if (rawVal == h.value) {
-                style = h.style
-                //break;
-            }
+            if (rawVal == h.value) { style = h.style }
         } else if (h.op == '!=') {
-            if (rawVal != h.value) {
-                style = h.style
-                //break;
-            }
+            if (rawVal != h.value) { style = h.style }
+        } else if (h.op == '>') {
+            if (rawVal > h.value) { style = h.style; }
+        } else if (h.op == '>=') {
+            if (rawVal >= h.value) { style = h.style; }
+        } else if (h.op == '<') {
+            if (rawVal < h.value) { style = h.style; }
+        } else if (h.op == '<=') {
+            if (rawVal <= h.value) { style = h.style; }
         }
     }
     return style;
