@@ -73,7 +73,7 @@ class TableColumn {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
                 if (val.constructor.name === 'Number') {
-                    if (this.#formatMoney) { val = val.formatMoney(); }                    
+                    if (this.#formatMoney) { val = val.formatMoney(); }
                 }
             } else {
                 if (_core.isObj(val) || Array.isArray(val)) {
@@ -199,6 +199,10 @@ function renderTableBody(objects, options) {
                         }
                         col.width = '50px';
                     }
+                } else {
+                    if (objects[i].style) {
+                        cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>';
+                    }
                 }
             }
             tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')}">${cellValue}</td>`;
@@ -222,18 +226,21 @@ function getHighlightStyle(object, options) {
         var h = options.highlights[hx];
         var rawVal = object[h.column];
         if (h.op == '=') {
-            if (rawVal == h.value) { style = h.style }
+            if (rawVal == h.value) { style += h.style }
         } else if (h.op == '!=') {
-            if (rawVal != h.value) { style = h.style }
+            if (rawVal != h.value) { style += h.style }
         } else if (h.op == '>') {
-            if (rawVal > h.value) { style = h.style; }
+            if (rawVal > h.value) { style += h.style; }
         } else if (h.op == '>=') {
-            if (rawVal >= h.value) { style = h.style; }
+            if (rawVal >= h.value) { style += h.style; }
         } else if (h.op == '<') {
-            if (rawVal < h.value) { style = h.style; }
+            if (rawVal < h.value) { style += h.style; }
         } else if (h.op == '<=') {
-            if (rawVal <= h.value) { style = h.style; }
+            if (rawVal <= h.value) { style += h.style; }
+        } else if (h.customStyle) {
+            style += (h.customStyle(object, rawVal, h) || '');
         }
+        if (style) { style += ' '; }
     }
     return style;
 }
