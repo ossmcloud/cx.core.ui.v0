@@ -14,7 +14,7 @@
                 " value="new {{recordTitle}}" />
             {{/if}}
             {{#each showButtons as | b |}}
-                <input class="btn form-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
+                <input class="btn form-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}', this);">
             {{/each}}
         </div>
         <div id="{{id}}_count_container" class="jx-table-count-container">

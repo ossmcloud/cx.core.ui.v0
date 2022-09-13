@@ -14,7 +14,7 @@
                     {{#if editMode}}
                     <input class="btn jx-btn-inline jx-btn-save" type="submit" value="Save">
                     {{#if allowDelete}}
-                    <input class="btn jx-btn-inline" style="color: red;" type="button" value="Delete" onclick="cx.clientExec('deleteRecord');">
+                    <input class="btn jx-btn-inline" style="color: red;" type="button" value="Delete" onclick="cx.clientExec('deleteRecord', this);">
                     {{/if}}
                     {{else}}
                     {{#if allowEdit}}
@@ -31,7 +31,7 @@
                     {{#if b.link}}
                     <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="window.open('{{b.link}}');" />
                     {{else}}
-                    <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}');">
+                    <input class="btn jx-btn-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}', this);">
                     {{/if}}
                     {{/each}}
                 </td>
