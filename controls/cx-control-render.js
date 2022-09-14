@@ -13,7 +13,7 @@ function _renderTableFilters(options) {
     for (var fx = 0; fx < options.filters.length; fx++) {
         var filter = options.filters[fx];
         filter.inline = true;
-        filter.value = options.query[filter.fieldName];
+        filter.value = options.query[filter.fieldName] || filter.value;
         filtersHtml += _renderControl(filter);
     }
     return filtersHtml;
