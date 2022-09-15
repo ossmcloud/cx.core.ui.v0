@@ -72,8 +72,8 @@ class TableColumn {
                 if (val.constructor.name === 'Date') {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
-                if (val.constructor.name === 'Number') {
-                    if (this.#formatMoney) { val = val.formatMoney(); }
+                if (val.constructor.name === 'Number' || !isNaN(parseFloat( val))) {
+                    if (this.#formatMoney) { val = parseFloat(val).formatMoney(); }
                 }
             } else {
                 if (_core.isObj(val) || Array.isArray(val)) {
