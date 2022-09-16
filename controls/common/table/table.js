@@ -6,6 +6,7 @@ const _h = require('handlebars');
 const _core = require('cx-core');
 const _controlBase = require('../../base/controlBase/controlBase');
 const _declarations = require('../../../cx-core-ui-declarations');
+const { deserialize } = require('v8');
 
 var _input = null;
 
@@ -38,6 +39,7 @@ class TableColumn {
         this.#input = options.input || null;
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
+        
     }
 
     get name() { return this.#name; }
@@ -73,7 +75,14 @@ class TableColumn {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
                 if (val.constructor.name === 'Number' || !isNaN(parseFloat( val))) {
-                    if (this.#formatMoney) { val = parseFloat(val).formatMoney(); }
+                    if (this.#formatMoney) {
+                        var dec = 2;
+                        if (this.#formatMoney.constructor.name == 'String') {
+                            dec = parseInt(this.#formatMoney.substr(1));
+                            if (isNaN(dec)) { dec = 2; }
+                        }
+                        val = parseFloat(val).formatMoney(dec);
+                    }
                 }
             } else {
                 if (_core.isObj(val) || Array.isArray(val)) {
