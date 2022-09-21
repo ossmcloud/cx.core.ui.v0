@@ -22,6 +22,7 @@ class TableColumn {
     #input = null;
     #fontSize = null;
     #formatMoney = null;
+    #unbound = false;
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -39,6 +40,7 @@ class TableColumn {
         this.#input = options.input || null;
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
+        this.#unbound = options.unbound;
         
     }
 
@@ -55,10 +57,12 @@ class TableColumn {
         this.#width = val;
     }
     get lookUps() { return this.#lookUps; }
+    get unbound() { return this.#unbound; }
 
 
     value(object, raw) {
         var val = object[this.name];
+        if (this.unbound) { return ''; }
         if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[NULL]</span>'; }
         if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[UNKNOWN]</span>'; }
         if (this.lookUps.length > 0) {
@@ -209,11 +213,20 @@ function renderTableBody(objects, options) {
                         col.width = '50px';
                     }
                 } else {
+                    if (cellValue === false) { cellValue = '&#x2610;'; }
+                    if (cellValue === true) { cellValue = '&#x2611;'; }
                     if (objects[i].style) {
                         cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>';
                     }
                 }
             }
+
+            //
+            var cellStyle = getCellHighlightStyle(objects[i], col, options);
+            if (cellStyle) {
+                cellValue = `<span style="${cellStyle}">${cellValue}</span>`;
+            }
+
             tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')}">${cellValue}</td>`;
         }
 
@@ -254,6 +267,36 @@ function getHighlightStyle(object, options) {
     return style;
 }
 
+function getCellHighlightStyle(object, column, options) {
+    var style = '';
+    for (var hx = 0; hx < options.cellHighlights.length; hx++) {
+        var h = options.cellHighlights[hx];
+        if (!h.columns || h.columns.indexOf(column.name) < 0) {
+            continue;
+        }
+
+        var rawVal = object[h.column];
+        if (h.op == '=') {
+            if (rawVal == h.value) { style += h.style }
+        } else if (h.op == '!=') {
+            if (rawVal != h.value) { style += h.style }
+        } else if (h.op == '>') {
+            if (rawVal > h.value) { style += h.style; }
+        } else if (h.op == '>=') {
+            if (rawVal >= h.value) { style += h.style; }
+        } else if (h.op == '<') {
+            if (rawVal < h.value) { style += h.style; }
+        } else if (h.op == '<=') {
+            if (rawVal <= h.value) { style += h.style; }
+        } else if (h.customStyle) {
+            style += (h.customStyle(object, rawVal, h) || '');
+        }
+        if (style) { style += ' '; }
+    }
+    return style;
+}
+
+
 
 
 function render(options, objects, input) {
@@ -275,6 +318,7 @@ function render(options, objects, input) {
 
     //
     if (!options.highlights) { options.highlights = []; }
+    if (!options.cellHighlights) { options.cellHighlights = []; }
 
     //
     formatColumns(objects, options);

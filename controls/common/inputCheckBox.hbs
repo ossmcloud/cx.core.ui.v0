@@ -2,13 +2,19 @@
 <label onclick="$(this).prev().click();">
     {{labelCheckBox}}
 </label>
-<span id="{{id}}" name="{{name}}" class="jx-inlineText">{{value}}</span>
+<span id="{{id}}" name="{{name}}" class="jx-inlineText">
+    {{#if value}} 
+        &#x2611;
+    {{else}}
+        &#x2610;
+    {{/if}}
+</span>
 {{else}}
 <label onclick="$(this).prev().click();" style="display: block; padding-top: 3px;">
     {{labelCheckBox}}
 </label>
 <input
-    id="{{id}}" name="{{name}}" class="jx-control" type="checkbox" value="{{value}}" 
+    id="{{id}}" name="{{name}}" class="jx-control" type="checkbox" 
     {{#if value}} checked  {{/if}}
     {{#if width}} style="width: 30px;" {{/if}}
     {{#if disabled}} disabled  {{/if}}
