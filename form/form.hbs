@@ -1,7 +1,7 @@
 <h1 id="jx_page_title" class="p_title">{{title}}</h1>
 {{#if editMode}}
 <form id="{{id}}_form" method="{{formMethod}}" action="{{formAction}}" data-record="{{{record}}}">
-    {{/if}}
+{{/if}}
     <input id="accountId" name="accountId" type="hidden" value="{{accountId}}">
     <input id="recordId" name="recordId" type="hidden" value="{{recordId}}">
     <input id="rowVersion" name="rowVersion" type="hidden" value="{{rowVersion}}">
@@ -46,6 +46,6 @@
 
     {{{fieldHtml}}}
 
-    {{#if editMode}}
+{{#if editMode}}
 </form>
 {{/if}}
