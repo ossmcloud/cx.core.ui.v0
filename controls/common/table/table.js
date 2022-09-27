@@ -23,6 +23,7 @@ class TableColumn {
     #fontSize = null;
     #formatMoney = null;
     #unbound = false;
+    #style = '';
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -41,6 +42,7 @@ class TableColumn {
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
         this.#unbound = options.unbound;
+        this.#style = options.style || '';
         
     }
 
@@ -58,6 +60,7 @@ class TableColumn {
     }
     get lookUps() { return this.#lookUps; }
     get unbound() { return this.#unbound; }
+    get style() { return this.#style; }
 
 
     value(object, raw) {
@@ -223,11 +226,10 @@ function renderTableBody(objects, options) {
 
             //
             var cellStyle = getCellHighlightStyle(objects[i], col, options);
-            if (cellStyle) {
-                cellValue = `<span style="${cellStyle}">${cellValue}</span>`;
-            }
+            if (cellStyle) { cellValue = `<span style="${cellStyle}">${cellValue}</span>`; }
 
-            tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')}">${cellValue}</td>`;
+            var cellColStyle = col.style || '';
+            tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')} ${cellColStyle}">${cellValue}</td>`;
         }
 
         tRow = tRow.replace('[$DATA$]', dataAttr);
