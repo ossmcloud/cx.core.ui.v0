@@ -24,6 +24,8 @@ class TableColumn {
     #formatMoney = null;
     #unbound = false;
     #style = '';
+    #nullText = '';
+    #undefinedText = '';
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -43,7 +45,9 @@ class TableColumn {
         this.#formatMoney = options.formatMoney;
         this.#unbound = options.unbound;
         this.#style = options.style || '';
-        
+
+        this.#nullText = options.nullText || '[NULL]';
+        this.#undefinedText = options.undefinedText || '[UNKNOWN]';
     }
 
     get name() { return this.#name; }
@@ -66,8 +70,8 @@ class TableColumn {
     value(object, raw) {
         var val = object[this.name];
         if (this.unbound) { return ''; }
-        if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[NULL]</span>'; }
-        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">[UNKNOWN]</span>'; }
+        if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
+        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
         if (this.lookUps.length > 0) {
             for (var lx = 0; lx < this.lookUps.length; lx++) {
                 if (this.lookUps[lx].value == val) {
@@ -81,7 +85,7 @@ class TableColumn {
                 if (val.constructor.name === 'Date') {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
-                if (val.constructor.name === 'Number' || !isNaN(parseFloat( val))) {
+                if (val.constructor.name === 'Number' || !isNaN(parseFloat(val))) {
                     if (this.#formatMoney) {
                         var dec = 2;
                         if (this.#formatMoney.constructor.name == 'String') {
@@ -156,7 +160,7 @@ function renderActions(object, options) {
                 }
             }
             if (action.funcName) {
-                tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]})" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this)" >${action.label}</a>`;
             } else if (action.func) {
                 tBody += `<a class="jx-table-action" href="${action.func(object)}" target="${action.target}" >${action.label}</a>`;
             } else if (action.link) {
