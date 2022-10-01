@@ -119,7 +119,9 @@ function formatValue(options) {
             //options.rows = 5;
         }
         if (options.readOnly && options.value && options.value.replaceAll) {
-            options.value = options.value.replaceAll(' ', '&nbsp;');
+            // TODO: if spaces are replaced with &nbsp; word wrap does not qwork
+            //       not even sure why i did this
+            //options.value = options.value.replaceAll(' ', '&nbsp;');
             options.value = options.value.replaceAll('\n', '<br />');
         }
     }
