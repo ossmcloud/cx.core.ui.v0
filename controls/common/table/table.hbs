@@ -2,9 +2,11 @@
     data-cx-record-name="{{recordName}}" 
     data-cx-record-path="{{path}}" 
     class="jx-table-outer-container {{fixHeadClassNoBorder}}"
+    {{#if cssOuterStyle}}style="{{cssOuterStyle}}"{{/if}}
+    
 >
-    <div id="{{id}}_title_container" class="jx-table-title-outer-container" style="{{cssTitleBkgd}}">
-        <div id="{{id}}_title_container" class="jx-table-title-container">
+    <div id="{{id}}_title_container" class="jx-table-title-outer-container" style="{{cssTitleOuterStyle}}">
+        <div id="{{id}}_title_container" class="jx-table-title-container" style="{{cssTitleStyle}}">
             <span class="{{cssTitle}}">{{{title}}}</span>
             {{#if allowNew}}
                 <input type="button" id="{{id}}_record_new" class="btn form-inline" style="margin-bottom: 5px; 
@@ -17,7 +19,7 @@
                 <input class="btn form-inline" type="button" value="{{b.text}}" onclick="cx.clientExec('{{b.function}}', this);">
             {{/each}}
         </div>
-        <div id="{{id}}_count_container" class="jx-table-count-container">
+        <div id="{{id}}_count_container" class="jx-table-count-container" style="{{cssTitleStyle}}">
             {{#unless noCount}}
             {{count}} item(s)
             {{/unless}}
@@ -26,7 +28,7 @@
             {{/if}}
         </div>
         {{#if quickSearch}}
-        <div id="{{id}}_search_container" class="jx-table-search-container">
+        <div id="{{id}}_search_container" class="jx-table-search-container" style="{{cssTitleStyle}}">
             <input id="{{id}}_search" class="jx-control jx-table-quick-search" style="display: inline-block;" type="text" placeholder="quick search...">
         </div>
         {{/if}}
@@ -44,7 +46,7 @@
         </div>
     {{/if}}
     {{{content}}}
-    <div id="{{id}}_table_container" class="{{classTblContainer}}">
+    <div id="{{id}}_table_container" class="{{classTblContainer}}" {{#if cssTableContainerStyle}}style="{{cssTableContainerStyle}}"{{/if}}>
         {{{table}}}
     </div>
 </div>

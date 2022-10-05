@@ -319,7 +319,7 @@ function render(options, objects, input) {
     options.fixHeadClass = (options.fixHeader === true) ? 'jx-fixhead' : '';
     options.fixHeadClassNoBorder = (options.fixHeader === true || options.noBorder === true) ? 'jx-fixhead-noborder' : '';
     options.classTblContainer = (options.fixHeader === true) ? 'jx-table-container-fixhead' : 'jx-table-container';
-    options.cssTitle = 'jx-table-title';
+    if (!options.cssTitle) { options.cssTitle = 'jx-table-title'; }
     if (options.fixHeader) { options.cssTitle += '-fixhead'; }
 
     //
