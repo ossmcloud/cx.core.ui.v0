@@ -27,7 +27,9 @@ function _render(options, record) {
     if (!options.fields) { options.fields = []; }
     for (var fx = 0; fx < options.fields.length; fx++) {
         var field = options.fields[fx];
-        field.readOnly = !options.editMode;
+        if (!options.editMode) {
+            field.readOnly = true;
+        }
         options.fieldHtml += _renderField(field, record);
     }
 
