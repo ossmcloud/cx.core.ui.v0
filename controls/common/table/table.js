@@ -160,7 +160,7 @@ function renderActions(object, options) {
                 }
             }
             if (action.funcName) {
-                tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this)" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this, event)" >${action.label}</a>`;
             } else if (action.func) {
                 tBody += `<a class="jx-table-action" href="${action.func(object)}" target="${action.target}" >${action.label}</a>`;
             } else if (action.link) {
