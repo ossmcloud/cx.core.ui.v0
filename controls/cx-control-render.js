@@ -9,6 +9,15 @@ const _controlGroup = require('./common/controlGroup/controlGroup');
 function _renderTableFilters(options) {
     if (!options.filters) { return ''; }
     if (!options.query) { options.query = {}; }
+
+    // @PAGING:
+    if (options.paging) {
+        var pageFilter = { label: 'page', fieldName: 'page', type: _declarations.ControlType.NUMERIC, width: '50px', inline: true, inputStyle: 'text-align: center' }
+        pageFilter.value = options.query.page || 1;
+        options.pagingFilter = _renderControl(pageFilter);
+    }
+
+  
     var filtersHtml = '';
     for (var fx = 0; fx < options.filters.length; fx++) {
         var filter = options.filters[fx];
@@ -55,6 +64,8 @@ function _renderControl(options, objects) {
     } else {
         // render filters if any
         if (Array.isArray(options.filters)) { options.filters = _renderTableFilters(options); }
+     
+
         // render control
         return _commonInputs.render(options, objects);
     }

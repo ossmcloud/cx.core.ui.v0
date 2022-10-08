@@ -3,6 +3,7 @@
 {{else}}
 <input 
     id="{{id}}" name="{{name}}" class="jx-control" type="text" value="{{value}}" 
+    {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
     {{#if width}} {{/if}}
     {{#if min}} minlength="{{min}}" {{/if}}
     {{#if max}} maxlength="{{max}}" {{/if}}

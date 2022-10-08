@@ -326,6 +326,7 @@ function render(options, objects, input) {
     if (!options.highlights) { options.highlights = []; }
     if (!options.cellHighlights) { options.cellHighlights = []; }
 
+ 
     //
     formatColumns(objects, options);
     // 

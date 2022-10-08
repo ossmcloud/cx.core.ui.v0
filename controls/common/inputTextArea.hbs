@@ -4,6 +4,7 @@
 <textarea
     id="{{id}}" name="{{name}}" class="jx-control" type="text" 
     rows="{{rows}}" cols="{{cols}}"
+    {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
     {{#if min}} minlength="{{min}}" {{/if}}
     {{#if max}} maxlength="{{max}}" {{/if}}
     {{#if placeHolder}}  placeholder="{{placeHolder}}" {{/if}}

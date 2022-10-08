@@ -36,7 +36,14 @@
     {{#if filters}}
         <div id="{{id}}_filter_outer_container" class="jx-table-filter-outer-container">
             <div id="{{id}}_filter_container" class="jx-table-filter-container">
+                {{#if paging}}
+                <span class="jx-table-page-move" style="padding-right: 0px; margin-right: -6px; padding-bottom: 2px;" data-move="-1" title="previous page...">&#x25C1;</span>
+                {{{pagingFilter}}}
+                <span class="jx-table-page-move" style="padding-left: 0px; margin-left: -8px; padding-bottom: 2px;" data-move="1" title="next page...">&#x25B7;</span>
+                {{/if}}
+                
                 {{{filters}}}            
+                
             </div>
             <div id="{{id}}_filter_action_container" class="jx-table-filter-action-container">
                 <span class="jx-table-csv-export" title="export to csv...">&#x2913;</span>&nbsp;&nbsp;
