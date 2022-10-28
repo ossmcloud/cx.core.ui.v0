@@ -11,7 +11,7 @@ function _renderTableFilters(options) {
     if (!options.query) { options.query = {}; }
 
     // @PAGING:
-    if (options.paging) {
+    if (options.paging === true) {
         var pageFilter = { label: 'page', fieldName: 'page', type: _declarations.ControlType.NUMERIC, width: '50px', inline: true, inputStyle: 'text-align: center' }
         pageFilter.value = options.query.page || 1;
         options.pagingFilter = _renderControl(pageFilter);
