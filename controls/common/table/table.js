@@ -315,6 +315,17 @@ function render(options, objects, input) {
     if (!options.title) { options.title = ''; }
     if (options.sortable === undefined) { options.sortable = true; }
     options.count = objects.length;
+    if (options.paging) {
+        options.noCount = true;
+        if (objects.length > 0) {
+            var fromRow = options.pageSize * (options.pageNo - 1);
+            var toRow = fromRow + objects.length;
+            options.customCount = (fromRow + 1) + ' &#x21E8; ' + toRow;
+        } else {
+            options.customCount = '';
+        }
+        if (objects.count) { options.customCount += (' (of ' + objects.count + ')'); }
+    }
     //
     options.fixHeadClass = (options.fixHeader === true) ? 'jx-fixhead' : '';
     options.fixHeadClassNoBorder = (options.fixHeader === true || options.noBorder === true) ? 'jx-fixhead-noborder' : '';
@@ -326,7 +337,7 @@ function render(options, objects, input) {
     if (!options.highlights) { options.highlights = []; }
     if (!options.cellHighlights) { options.cellHighlights = []; }
 
- 
+
     //
     formatColumns(objects, options);
     // 
