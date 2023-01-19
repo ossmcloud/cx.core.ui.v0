@@ -51,6 +51,7 @@ function _renderControl(options, objects) {
                     } else {
                         if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
                         if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
+                        if (controlArray[cx].noRender === true) { continue; }
                         renderedControls += _renderControl(controlArray[cx], objects);
                     }
                 }
