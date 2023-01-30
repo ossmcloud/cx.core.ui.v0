@@ -22,6 +22,7 @@ class TableColumn {
     #input = null;
     #fontSize = null;
     #formatMoney = null;
+    #formatPercent = null;
     #unbound = false;
     #style = '';
     #nullText = '';
@@ -43,6 +44,7 @@ class TableColumn {
         this.#input = options.input || null;
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
+        this.#formatPercent = options.formatPercent;
         this.#unbound = options.unbound;
         this.#style = options.style || '';
 
@@ -93,6 +95,10 @@ class TableColumn {
                             if (isNaN(dec)) { dec = 2; }
                         }
                         val = parseFloat(val).formatMoney(dec);
+                    } else if (this.#formatPercent === true) {
+                        val = parseFloat(val).formatMoney(2) + '%';
+                    } else if (this.#formatPercent === '*100') {
+                        val = parseFloat(val * 100).formatMoney(2) + '%';
                     }
                 }
             } else {
