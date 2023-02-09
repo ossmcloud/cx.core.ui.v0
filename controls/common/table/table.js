@@ -27,6 +27,7 @@ class TableColumn {
     #style = '';
     #nullText = '';
     #undefinedText = '';
+    #addTotals = false;
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -50,6 +51,7 @@ class TableColumn {
 
         this.#nullText = options.nullText || '[NULL]';
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
+        this.#addTotals = options.addTotals || false;
     }
 
     get name() { return this.#name; }
@@ -67,6 +69,7 @@ class TableColumn {
     get lookUps() { return this.#lookUps; }
     get unbound() { return this.#unbound; }
     get style() { return this.#style; }
+    get addTotals() { return this.#addTotals; }
 
 
     value(object, raw) {
@@ -134,7 +137,7 @@ function formatColumns(objects, options) {
     options.columns = formattedColumns;
 }
 
-function renderTableHeader(objects, options) {
+function renderTableHeader(objects, options, tableTotals) {
     if (options.noHeader) { return ''; }
     var tHead = '<thead><tr>';
     if (options.actionsTitle == undefined) { options.actionsTitle = 'actions'; }
@@ -147,7 +150,15 @@ function renderTableHeader(objects, options) {
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         var textAlign = ` style="text-align: ${col.align};"`;
-        tHead += '<th ' + dataFieldName + sortableClass + textAlign + '>' + col.title + '</th>';
+        tHead += '<th ' + dataFieldName + sortableClass + textAlign + '>';
+        if (col.addTotals) {
+            tableTotals[col.name] = 0;
+            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span>{$' + col.name +'}</span>';
+            tHead += '<span style="display: block">' + col.title + '</span>';
+        } else {
+            tHead += col.title;
+        }
+        tHead += '</th>';
     }
     if (options.actions && !options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
     tHead += '</tr></thead>'
@@ -186,7 +197,7 @@ function renderActions(object, options) {
     return tBody;
 }
 
-function renderTableBody(objects, options) {
+function renderTableBody(objects, options, tableTotals) {
     var tBody = '<tbody>';
     for (var i = 0; i < objects.length; i++) {
         var highlightStyle = getHighlightStyle(objects[i], options);
@@ -199,11 +210,17 @@ function renderTableBody(objects, options) {
         var dataAttr = '';
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
+            
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
             }
             var cellValue = col.value(objects[i]);
+            if (col.addTotals) {
+                if (!tableTotals[col.name]) { tableTotals[col.name] = 0; }
+                var cellValueNo = parseFloat(objects[i][col.name]);
+                if (!isNaN(cellValueNo)) { tableTotals[col.name] += cellValueNo };
+            }
             if (col.type == 'check') {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
@@ -216,12 +233,13 @@ function renderTableBody(objects, options) {
             } else {
                 if (col.name == options.primaryKey) {
                     if (options.path) {
+                        var target = ' target="' + (options.linkTarget || '_self') + '" ';
                         var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-                        cellValue = '<a href="' + link + '">view</a>&nbsp&nbsp&nbsp';
+                        cellValue = '<a ' + target + 'href="' + link + '">view</a>&nbsp&nbsp&nbsp';
                         if (options.allowEditCondition) {
-                            if (options.allowEditCondition(objects[i])) { cellValue += '<a href="' + link + '&e=T">edit</a>'; }
+                            if (options.allowEditCondition(objects[i])) { cellValue += '<a ' + target + 'href="' + link + '&e=T">edit</a>'; }
                         } else if (options.allowEdit) {
-                            cellValue += '<a href="' + link + '&e=T">edit</a>';
+                            cellValue += '<a ' + target + 'href="' + link + '&e=T">edit</a>';
                         }
                         col.width = '50px';
                     }
@@ -347,10 +365,14 @@ function render(options, objects, input) {
     //
     formatColumns(objects, options);
     // 
+    var tableTotals = {};
     options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '">';
-    options.table += renderTableHeader(objects, options);
-    options.table += renderTableBody(objects, options);
+    options.table += renderTableHeader(objects, options, tableTotals);
+    options.table += renderTableBody(objects, options, tableTotals);
     options.table += '</table>';
+    for (var key in tableTotals) {
+        options.table = options.table.replace('{$' + key + '}', tableTotals[key].formatMoney());
+    }
 
 
 
