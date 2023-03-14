@@ -49,7 +49,7 @@ class TableColumn {
         this.#unbound = options.unbound;
         this.#style = options.style || '';
 
-        this.#nullText = options.nullText || '[NULL]';
+        this.#nullText = (options.nullText === undefined) ? '[NULL]' : options.nullText;
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
         this.#addTotals = options.addTotals || false;
     }
