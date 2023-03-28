@@ -51,7 +51,9 @@
         </table>
     </div>
     {{/unless}}
-
+    {{#if formBanner}}
+    <div class="form-banner-panel">{{{formBanner}}}</div>
+    {{/if}}
     {{{fieldHtml}}}
 
 {{#if editMode}}
