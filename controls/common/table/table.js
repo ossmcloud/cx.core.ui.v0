@@ -5,6 +5,7 @@ const _path = require('path');
 const _h = require('handlebars');
 const _core = require('cx-core');
 const _controlBase = require('../../base/controlBase/controlBase');
+const _render = require('../../cx-control-render');
 const _declarations = require('../../../cx-core-ui-declarations');
 const { deserialize } = require('v8');
 
@@ -153,7 +154,7 @@ function renderTableHeader(objects, options, tableTotals) {
         tHead += '<th ' + dataFieldName + sortableClass + textAlign + '>';
         if (col.addTotals) {
             tableTotals[col.name] = 0;
-            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span>{$' + col.name +'}</span>';
+            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name +'}</span></span>';
             tHead += '<span style="display: block">' + col.title + '</span>';
         } else {
             tHead += col.title;
@@ -202,8 +203,16 @@ function renderTableBody(objects, options, tableTotals) {
     var tBody = '<tbody>';
     for (var i = 0; i < objects.length; i++) {
         var highlightStyle = getHighlightStyle(objects[i], options);
+        // for (var j = 0; j < options.columns.length; j++) {
+        //     if (options.columns[j].input) {
+        //         //hasInputs = true;
+        //         highlightStyle += ' padding: 3px;';
+        //         break;
+        //     }
+        // }
 
-        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" [$DATA$]>`;
+
+        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" data-cx-line-no="${i}" [$DATA$]>`;
 
         //
         if (options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
@@ -211,7 +220,8 @@ function renderTableBody(objects, options, tableTotals) {
         var dataAttr = '';
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
-            
+            var cellColStyle = col.style || '';
+
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
@@ -226,10 +236,13 @@ function renderTableBody(objects, options, tableTotals) {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
             } else if (col.input) {
-                col.input.name = col.name;
-                col.input.id = i + '_' + col.name;
+                col.input.id = options.id + '_' + col.name + '_' + i;
+                col.input.name = col.input.id;
                 col.input.value = objects[i][col.name];
+
                 cellValue = _input.render(col.input);
+
+                cellColStyle += ' padding: 0px;';
 
             } else {
                 if (col.name == options.primaryKey) {
@@ -256,8 +269,7 @@ function renderTableBody(objects, options, tableTotals) {
             //
             var cellStyle = getCellHighlightStyle(objects[i], col, options);
             if (cellStyle) { cellValue = `<span style="${cellStyle}">${cellValue}</span>`; }
-
-            var cellColStyle = col.style || '';
+            
             tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')} ${cellColStyle}">${cellValue}</td>`;
         }
 
