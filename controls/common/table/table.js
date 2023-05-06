@@ -8,6 +8,7 @@ const _controlBase = require('../../base/controlBase/controlBase');
 const _render = require('../../cx-control-render');
 const _declarations = require('../../../cx-core-ui-declarations');
 const { deserialize } = require('v8');
+const { template } = require('handlebars');
 
 var _input = null;
 
@@ -142,12 +143,16 @@ function renderTableHeader(objects, options, tableTotals) {
     if (options.noHeader) { return ''; }
     var tHead = '<thead><tr>';
     if (options.actionsTitle == undefined) { options.actionsTitle = 'actions'; }
-    if (options.actions && options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
+    if (options.listActions && options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
+    }
+    if (options.actions && options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`;
+    }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
-        if (col.dataHidden || col.hide) {
-            continue;
-        }
+        if (col.dataHidden || col.hide) { continue; }
+
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         var textAlign = ` style="text-align: ${col.align};"`;
@@ -161,7 +166,12 @@ function renderTableHeader(objects, options, tableTotals) {
         }
         tHead += '</th>';
     }
-    if (options.actions && !options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
+    if (options.actions && !options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`;
+    }
+    if (options.listActions && !options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
+    }
     tHead += '</tr></thead>'
     return tHead;
 }
@@ -196,28 +206,31 @@ function renderActions(object, options) {
         }
         tBody += '</td>';
     }
+    if (options.listActions) {
+        tBody += '<td style="text-align: center; width: 50px;">';
+        tBody += `<span class="jx-table-action-add-line" title="add line below">&#65291;</span>`;
+        tBody += `<span class="jx-table-action-copy-line" title="duplicate line">&#x29C9;</span>`;
+        tBody += `<span class="jx-table-action-delete-line" title="delete line">&#128465;</span>`;
+        tBody += '</td>';
+    }
     return tBody;
 }
 
-function renderTableBody(objects, options, tableTotals) {
-    var tBody = '<tbody>';
+function renderTableBody(objects, options, tableTotals, rowTemplate) {
+    var tBody = (rowTemplate) ? '<tfoot>' : '<tbody>';
     for (var i = 0; i < objects.length; i++) {
+        var isNewRowTemplate = '';
         var highlightStyle = getHighlightStyle(objects[i], options);
-        // for (var j = 0; j < options.columns.length; j++) {
-        //     if (options.columns[j].input) {
-        //         //hasInputs = true;
-        //         highlightStyle += ' padding: 3px;';
-        //         break;
-        //     }
-        // }
-
-
-        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" data-cx-line-no="${i}" [$DATA$]>`;
-
+        if (rowTemplate) {
+            highlightStyle += ' display: none';
+            isNewRowTemplate = 'data-row-template="true"';
+        }
+      
+        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" ${isNewRowTemplate} data-cx-line-no="${i}" [$DATA$]>`;
         //
         if (options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
 
-        var dataAttr = '';
+        var dataAttr = ''; var jj = 0;
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellColStyle = col.style || '';
@@ -226,6 +239,7 @@ function renderTableBody(objects, options, tableTotals) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
             }
+            
             var cellValue = col.value(objects[i]);
             if (col.addTotals) {
                 if (!tableTotals[col.name]) { tableTotals[col.name] = 0; }
@@ -236,12 +250,14 @@ function renderTableBody(objects, options, tableTotals) {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
             } else if (col.input) {
-                col.input.id = options.id + '_' + col.name + '_' + i;
+                col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((template) ? 'tmpl_idx' : i);
                 col.input.name = col.input.id;
+                col.input.fieldName = col.input.id;
                 col.input.value = objects[i][col.name];
+                col.input.dataAttributes = null;
+                col.input.data = null;
 
                 cellValue = _input.render(col.input);
-
                 cellColStyle += ' padding: 0px;';
 
             } else {
@@ -269,8 +285,14 @@ function renderTableBody(objects, options, tableTotals) {
             //
             var cellStyle = getCellHighlightStyle(objects[i], col, options);
             if (cellStyle) { cellValue = `<span style="${cellStyle}">${cellValue}</span>`; }
+
+            if (options.listActions && jj == 0) {
+                cellValue += `<input type="hidden" name="${options.id + '_lineid_' + i}" value="${objects[i].id}">`;
+            }
+            jj++;
             
             tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')} ${cellColStyle}">${cellValue}</td>`;
+            
         }
 
         tRow = tRow.replace('[$DATA$]', dataAttr);
@@ -281,7 +303,7 @@ function renderTableBody(objects, options, tableTotals) {
         tRow += '</tr>';
         tBody += tRow;
     }
-    tBody += '</tbody>';
+    tBody += ((rowTemplate) ? '</tfoot>' : '</tbody>');
     return tBody;
 }
 
@@ -382,6 +404,11 @@ function render(options, objects, input) {
     options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '">';
     options.table += renderTableHeader(objects, options, tableTotals);
     options.table += renderTableBody(objects, options, tableTotals);
+
+    if (options.rowTemplate) {
+        options.table += renderTableBody([options.rowTemplate], options, {}, true);
+    }
+
     options.table += '</table>';
     for (var key in tableTotals) {
         options.table = options.table.replace('{$' + key + '}', tableTotals[key].formatMoney());
