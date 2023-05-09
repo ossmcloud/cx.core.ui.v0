@@ -3,6 +3,7 @@
 {{else}}
 <input
     id="{{id}}" name="{{name}}" class="jx-control jx-control-number" type="number" value="{{value}}" step="any"
+    {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}
     {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
     {{#if width}} {{/if}}
     {{#if min}} min="{{min}}" {{/if}}

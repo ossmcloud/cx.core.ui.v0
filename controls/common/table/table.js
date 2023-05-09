@@ -225,8 +225,8 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
             highlightStyle += ' display: none';
             isNewRowTemplate = 'data-row-template="true"';
         }
-      
-        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" ${isNewRowTemplate} data-cx-line-no="${i}" [$DATA$]>`;
+        var lineNo = (rowTemplate) ? -1 : i;
+        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" ${isNewRowTemplate} data-cx-line-no="${lineNo}" [$DATA$]>`;
         //
         if (options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
 
@@ -250,9 +250,12 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
             } else if (col.input) {
-                col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((template) ? 'tmpl_idx' : i);
+                col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
                 col.input.name = col.input.id;
+                
                 col.input.fieldName = col.input.id;
+                col.input.fieldNameDb = col.name;
+                
                 col.input.value = objects[i][col.name];
                 col.input.dataAttributes = null;
                 col.input.data = null;
