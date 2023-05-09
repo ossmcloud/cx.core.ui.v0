@@ -56,4 +56,7 @@
     <div id="{{id}}_table_container" class="{{classTblContainer}}" {{#if cssTableContainerStyle}}style="{{cssTableContainerStyle}}"{{/if}}>
         {{{table}}}
     </div>
+    {{#if lookupLists}}
+    <data style="display: none;" id="{{id}}_lookup_lists">{{lookupLists}}</data>
+    {{/if}}
 </div>

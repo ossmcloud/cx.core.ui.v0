@@ -290,7 +290,8 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
             if (cellStyle) { cellValue = `<span style="${cellStyle}">${cellValue}</span>`; }
 
             if (options.listActions && jj == 0) {
-                cellValue += `<input type="hidden" name="${options.id + '_lineid_' + i}" value="${objects[i].id}">`;
+                var hiddenId = 'cxlist_' +  options.id + '_lineId_' + ((rowTemplate) ? 'tmpl_idx' : i);
+                cellValue += `<input type="hidden" id="${hiddenId}" name="${hiddenId}" value="${objects[i].id}">`;
             }
             jj++;
             
@@ -417,6 +418,9 @@ function render(options, objects, input) {
         options.table = options.table.replace('{$' + key + '}', tableTotals[key].formatMoney());
     }
 
+    if (options.lookupLists) {
+        options.lookupLists = _core.text.toBase64(JSON.stringify(options.lookupLists));
+    }
 
 
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'table.hbs'), 'utf8'));
