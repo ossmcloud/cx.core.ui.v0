@@ -261,20 +261,20 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
                 col.input.data = null;
 
                 cellValue = _input.render(col.input);
-                cellColStyle += ' padding: 0px;';
+                cellColStyle += ' padding: 1px 0px 0px 0px;';
 
             } else {
                 if (col.name == options.primaryKey) {
                     if (options.path) {
                         var target = ' target="' + (options.linkTarget || '_self') + '" ';
                         var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-                        cellValue = '<a ' + target + 'href="' + link + '">view</a>&nbsp&nbsp&nbsp';
+                        cellValue = '<a style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
                         if (options.allowEditCondition) {
-                            if (options.allowEditCondition(objects[i])) { cellValue += '<a ' + target + 'href="' + link + '&e=T">edit</a>'; }
+                            if (options.allowEditCondition(objects[i])) { cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
                         } else if (options.allowEdit) {
-                            cellValue += '<a ' + target + 'href="' + link + '&e=T">edit</a>';
+                            cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
                         }
-                        col.width = '50px';
+                        col.width = '30px';
                     }
                 } else {
                     if (cellValue === false) { cellValue = '&#x2610;'; }
