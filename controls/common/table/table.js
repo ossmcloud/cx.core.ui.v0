@@ -5,8 +5,10 @@ const _path = require('path');
 const _h = require('handlebars');
 const _core = require('cx-core');
 const _controlBase = require('../../base/controlBase/controlBase');
+const _render = require('../../cx-control-render');
 const _declarations = require('../../../cx-core-ui-declarations');
 const { deserialize } = require('v8');
+const { template } = require('handlebars');
 
 var _input = null;
 
@@ -49,7 +51,7 @@ class TableColumn {
         this.#unbound = options.unbound;
         this.#style = options.style || '';
 
-        this.#nullText = options.nullText || '[NULL]';
+        this.#nullText = (options.nullText === undefined) ? '[NULL]' : options.nullText;
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
         this.#addTotals = options.addTotals || false;
     }
@@ -141,26 +143,35 @@ function renderTableHeader(objects, options, tableTotals) {
     if (options.noHeader) { return ''; }
     var tHead = '<thead><tr>';
     if (options.actionsTitle == undefined) { options.actionsTitle = 'actions'; }
-    if (options.actions && options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
+    if (options.listActions && options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
+    }
+    if (options.actions && options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`;
+    }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
-        if (col.dataHidden || col.hide) {
-            continue;
-        }
+        if (col.dataHidden || col.hide) { continue; }
+
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         var textAlign = ` style="text-align: ${col.align};"`;
         tHead += '<th ' + dataFieldName + sortableClass + textAlign + '>';
         if (col.addTotals) {
             tableTotals[col.name] = 0;
-            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span>{$' + col.name +'}</span>';
+            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name +'}</span></span>';
             tHead += '<span style="display: block">' + col.title + '</span>';
         } else {
             tHead += col.title;
         }
         tHead += '</th>';
     }
-    if (options.actions && !options.actionsShowFirst) { tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`; }
+    if (options.actions && !options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`;
+    }
+    if (options.listActions && !options.actionsShowFirst) {
+        tHead += `<th style="text-align: center; width: 50px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
+    }
     tHead += '</tr></thead>'
     return tHead;
 }
@@ -176,10 +187,11 @@ function renderActions(object, options) {
                     continue;
                 }
             }
+            var actionToolTip = (action.toolTip) ? `title="${action.toolTip}"` : '';
             if (action.funcName) {
-                tBody += `<a class="jx-table-action" href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this, event)" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this, event)" >${action.label}</a>`;
             } else if (action.func) {
-                tBody += `<a class="jx-table-action" href="${action.func(object)}" target="${action.target}" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" target="${action.target}" >${action.label}</a>`;
             } else if (action.link) {
                 var link = action.link;
                 if (link[link.length - 1] == '=') {
@@ -189,32 +201,45 @@ function renderActions(object, options) {
                         link += object[options.primaryKey];
                     }
                 }
-                tBody += `<a class="jx-table-action" href="${link}" target="${action.target}" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="${link}" target="${action.target}" >${action.label}</a>`;
             }
         }
+        tBody += '</td>';
+    }
+    if (options.listActions) {
+        tBody += '<td style="text-align: center; width: 50px;">';
+        tBody += `<span class="jx-table-action-add-line" title="add line below">&#65291;</span>`;
+        tBody += `<span class="jx-table-action-copy-line" title="duplicate line">&#x29C9;</span>`;
+        tBody += `<span class="jx-table-action-delete-line" title="delete line">&#128465;</span>`;
         tBody += '</td>';
     }
     return tBody;
 }
 
-function renderTableBody(objects, options, tableTotals) {
-    var tBody = '<tbody>';
+function renderTableBody(objects, options, tableTotals, rowTemplate) {
+    var tBody = (rowTemplate) ? '<tfoot>' : '<tbody>';
     for (var i = 0; i < objects.length; i++) {
+        var isNewRowTemplate = '';
         var highlightStyle = getHighlightStyle(objects[i], options);
-
-        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" [$DATA$]>`;
-
+        if (rowTemplate) {
+            highlightStyle += ' display: none';
+            isNewRowTemplate = 'data-row-template="true"';
+        }
+        var lineNo = (rowTemplate) ? -1 : i;
+        var tRow = `<tr style="${highlightStyle}" data-cx-record-id="${objects[i][options.primaryKey]}" ${isNewRowTemplate} data-cx-line-no="${lineNo}" [$DATA$]>`;
         //
         if (options.actionsShowFirst) { tRow += renderActions(objects[i], options); }
 
-        var dataAttr = '';
+        var dataAttr = ''; var jj = 0;
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
-            
+            var cellColStyle = col.style || '';
+
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
             }
+            
             var cellValue = col.value(objects[i]);
             if (col.addTotals) {
                 if (!tableTotals[col.name]) { tableTotals[col.name] = 0; }
@@ -225,23 +250,31 @@ function renderTableBody(objects, options, tableTotals) {
                 cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
             } else if (col.input) {
-                col.input.name = col.name;
-                col.input.id = i + '_' + col.name;
+                col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+                col.input.name = col.input.id;
+                
+                col.input.fieldName = col.input.id;
+                col.input.fieldNameDb = col.name;
+                
                 col.input.value = objects[i][col.name];
+                col.input.dataAttributes = null;
+                col.input.data = null;
+
                 cellValue = _input.render(col.input);
+                cellColStyle += ' padding: 1px 0px 0px 0px;';
 
             } else {
                 if (col.name == options.primaryKey) {
                     if (options.path) {
                         var target = ' target="' + (options.linkTarget || '_self') + '" ';
                         var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-                        cellValue = '<a ' + target + 'href="' + link + '">view</a>&nbsp&nbsp&nbsp';
+                        cellValue = '<a style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
                         if (options.allowEditCondition) {
-                            if (options.allowEditCondition(objects[i])) { cellValue += '<a ' + target + 'href="' + link + '&e=T">edit</a>'; }
+                            if (options.allowEditCondition(objects[i])) { cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
                         } else if (options.allowEdit) {
-                            cellValue += '<a ' + target + 'href="' + link + '&e=T">edit</a>';
+                            cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
                         }
-                        col.width = '50px';
+                        col.width = '30px';
                     }
                 } else {
                     if (cellValue === false) { cellValue = '&#x2610;'; }
@@ -256,8 +289,14 @@ function renderTableBody(objects, options, tableTotals) {
             var cellStyle = getCellHighlightStyle(objects[i], col, options);
             if (cellStyle) { cellValue = `<span style="${cellStyle}">${cellValue}</span>`; }
 
-            var cellColStyle = col.style || '';
+            if (options.listActions && jj == 0) {
+                var hiddenId = 'cxlist_' +  options.id + '_lineId_' + ((rowTemplate) ? 'tmpl_idx' : i);
+                cellValue += `<input type="hidden" id="${hiddenId}" name="${hiddenId}" value="${objects[i].id}">`;
+            }
+            jj++;
+            
             tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')} ${cellColStyle}">${cellValue}</td>`;
+            
         }
 
         tRow = tRow.replace('[$DATA$]', dataAttr);
@@ -268,7 +307,7 @@ function renderTableBody(objects, options, tableTotals) {
         tRow += '</tr>';
         tBody += tRow;
     }
-    tBody += '</tbody>';
+    tBody += ((rowTemplate) ? '</tfoot>' : '</tbody>');
     return tBody;
 }
 
@@ -369,11 +408,19 @@ function render(options, objects, input) {
     options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '">';
     options.table += renderTableHeader(objects, options, tableTotals);
     options.table += renderTableBody(objects, options, tableTotals);
+
+    if (options.rowTemplate) {
+        options.table += renderTableBody([options.rowTemplate], options, {}, true);
+    }
+
     options.table += '</table>';
     for (var key in tableTotals) {
         options.table = options.table.replace('{$' + key + '}', tableTotals[key].formatMoney());
     }
 
+    if (options.lookupLists) {
+        options.lookupLists = _core.text.toBase64(JSON.stringify(options.lookupLists));
+    }
 
 
     var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, 'table.hbs'), 'utf8'));

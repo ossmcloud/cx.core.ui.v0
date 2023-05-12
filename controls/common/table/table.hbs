@@ -5,6 +5,7 @@
     {{#if cssOuterStyle}}style="{{cssOuterStyle}}"{{/if}}
     
 >
+    {{#unless hideTitlePanel}}
     <div id="{{id}}_title_container" class="jx-table-title-outer-container" style="{{cssTitleOuterStyle}}">
         <div id="{{id}}_title_container" class="jx-table-title-container" style="{{cssTitleStyle}}">
             <span class="{{cssTitle}}">{{{title}}}</span>
@@ -33,6 +34,7 @@
         </div>
         {{/if}}
     </div>
+    {{/unless}}
     {{#if filters}}
         <div id="{{id}}_filter_outer_container" class="jx-table-filter-outer-container">
             <div id="{{id}}_filter_container" class="jx-table-filter-container">
@@ -56,4 +58,7 @@
     <div id="{{id}}_table_container" class="{{classTblContainer}}" {{#if cssTableContainerStyle}}style="{{cssTableContainerStyle}}"{{/if}}>
         {{{table}}}
     </div>
+    {{#if lookupLists}}
+    <data style="display: none;" id="{{id}}_lookup_lists">{{lookupLists}}</data>
+    {{/if}}
 </div>

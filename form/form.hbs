@@ -1,10 +1,13 @@
-<h1 id="jx_page_title" class="p_title">{{title}}</h1>
+<h1 id="jx_page_title" class="p_title">{{{title}}}</h1>
 {{#if editMode}}
 <form id="{{id}}_form" method="{{formMethod}}" action="{{formAction}}" data-record="{{{record}}}">
+{{else}}
+<div id="{{id}}_form" data-record="{{{record}}}">
 {{/if}}
     <input id="accountId" name="accountId" type="hidden" value="{{accountId}}">
     <input id="recordId" name="recordId" type="hidden" value="{{recordId}}">
     <input id="rowVersion" name="rowVersion" type="hidden" value="{{rowVersion}}">
+    <input id="cxReferrer" name="cxReferrer" type="hidden" value="{{referrer}}">
     {{#unless hideActions}}
     <div class="form-action-panel">
         <table class="form-action-table">
@@ -51,9 +54,13 @@
         </table>
     </div>
     {{/unless}}
-
+    {{#if formBanner}}
+    <div class="form-banner-panel">{{{formBanner}}}</div>
+    {{/if}}
     {{{fieldHtml}}}
 
 {{#if editMode}}
 </form>
+{{else}}
+</div>
 {{/if}}

@@ -4,6 +4,7 @@
 <textarea
     id="{{id}}" name="{{name}}" class="jx-control" type="text" 
     rows="{{rows}}" cols="{{cols}}"
+    {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}
     {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
     {{#if min}} minlength="{{min}}" {{/if}}
     {{#if max}} maxlength="{{max}}" {{/if}}

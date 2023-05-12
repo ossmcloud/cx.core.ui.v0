@@ -4,6 +4,7 @@
 
 <select
     id="{{id}}" name="{{name}}" class="jx-control" 
+    {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}
     {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
     {{#if width}} {{/if}}
     {{#if disabled}} disabled  {{/if}}

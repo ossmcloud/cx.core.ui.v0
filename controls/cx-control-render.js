@@ -17,7 +17,7 @@ function _renderTableFilters(options) {
         options.pagingFilter = _renderControl(pageFilter);
     }
 
-  
+
     var filtersHtml = '';
     for (var fx = 0; fx < options.filters.length; fx++) {
         var filter = options.filters[fx];
@@ -33,10 +33,12 @@ function _renderControl(options, objects) {
     if (controlArray) {
         var renderedControls = '';
         if (!options.columnCount) { options.columnCount = 1; }
-        for (var colNo = 1; colNo <= (options.columnCount);  colNo++) {
+        for (var colNo = 1; colNo <= (options.columnCount); colNo++) {
             renderedControls += '<div class="jx-control-group-column"'
             if (options.style) {
                 renderedControls += ' style="' + options.style + '"';
+            } else if (options.styles && options.styles[colNo - 1]) {
+                renderedControls += ' style="' + options.styles[colNo - 1] + '"';
             } else {
                 if (options.columnCount == 1) { renderedControls += ' style="display: table-row"'; }
             }
@@ -47,7 +49,7 @@ function _renderControl(options, objects) {
                 if (!controlArray[cx].column) { controlArray[cx].column = 1; }
                 if (controlArray[cx].column == colNo) {
                     if (controlArray[cx].html) {
-                        renderedControls += html;   
+                        renderedControls += html;
                     } else {
                         if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
                         if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
@@ -65,7 +67,7 @@ function _renderControl(options, objects) {
     } else {
         // render filters if any
         if (Array.isArray(options.filters)) { options.filters = _renderTableFilters(options); }
-     
+
 
         // render control
         return _commonInputs.render(options, objects);

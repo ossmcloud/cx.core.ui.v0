@@ -1,8 +1,9 @@
 {{#if readOnly}}
-<span id="{{id}}" name="{{name}}" class="jx-inlineText">{{{value}}}</span>
+<span id="{{id}}" name="{{name}}" class="jx-inlineText"{{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}>{{{value}}}</span>
 {{else}}
 <input 
     id="{{id}}" name="{{name}}" class="jx-control" type="{{htmlType}}" value="{{value}}" 
+    {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}
     {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
     {{#if width}} {{/if}}
     {{#if min}} min="{{min}}" {{/if}}
