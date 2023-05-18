@@ -8,6 +8,7 @@ const _inputBase = require('../base/inputBase/inputBase');
 const _dropDown = require('./dropDown/dropDown');
 const _table = require('./table/table');
 const _core = require('cx-core');
+const { formatMoney } = require('cx-core/core/cx-core-number');
 
 
 
@@ -119,11 +120,42 @@ function formatValue(options) {
             //options.rows = 5;
         }
         if (options.readOnly && options.value && options.value.replaceAll) {
-            // TODO: if spaces are replaced with &nbsp; word wrap does not qwork
+            // TODO: if spaces are replaced with &nbsp; word wrap does not work
             //       not even sure why i did this
             //options.value = options.value.replaceAll(' ', '&nbsp;');
             options.value = options.value.replaceAll('\n', '<br />');
         }
+    } else if (options.type == _declarations.ControlType.NUMERIC) {
+        // TODO: @@REVIEW: encapsulate, used table.js
+        var val = options.value;
+        if (options.readOnly) {
+            if (options.formatMoney) {
+                var dec = 2;
+                if (options.formatMoney.constructor.name == 'String') {
+                    dec = parseInt(options.formatMoney.substr(1));
+                    if (isNaN(dec)) { dec = 2; }
+                }
+                val = parseFloat(val).formatMoney(dec);
+            } else if (options.formatPercent === true) {
+                val = parseFloat(val).formatMoney(2) + '%';
+            } else if (options.formatPercent === '*100') {
+                val = parseFloat(val * 100).formatMoney(2) + '%';
+            } else {
+                val = parseFloat(val).formatMoney();
+            }
+        } else {
+            
+            if (options.formatMoney || options.formatPercent) {
+                var dec = 2;
+                if (options.formatMoney.constructor.name == 'String') {
+                    dec = parseInt(options.formatMoney.substr(1));
+                    if (isNaN(dec)) { dec = 2; }
+                }
+                val = parseFloat(val).toFixed(dec);
+            } 
+            
+        }
+        options.value = val;
     }
 
 
