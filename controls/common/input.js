@@ -129,13 +129,15 @@ function formatValue(options) {
         // TODO: @@REVIEW: encapsulate, used table.js
         var val = options.value;
         if (options.readOnly) {
-            if (options.formatMoney) {
-                var dec = 2;
-                if (options.formatMoney.constructor.name == 'String') {
-                    dec = parseInt(options.formatMoney.substr(1));
-                    if (isNaN(dec)) { dec = 2; }
+            if (options.formatMoney != undefined) {
+                if (options.formatMoney !== false) {
+                    var dec = 2;
+                    if (options.formatMoney.constructor.name == 'String') {
+                        dec = parseInt(options.formatMoney.substr(1));
+                        if (isNaN(dec)) { dec = 2; }
+                    }
+                    val = parseFloat(val).formatMoney(dec);
                 }
-                val = parseFloat(val).formatMoney(dec);
             } else if (options.formatPercent === true) {
                 val = parseFloat(val).formatMoney(2) + '%';
             } else if (options.formatPercent === '*100') {
