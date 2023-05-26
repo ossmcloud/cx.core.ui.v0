@@ -25,6 +25,7 @@ class TableColumn {
     #fontSize = null;
     #formatMoney = null;
     #formatPercent = null;
+    #formatNumber = null;
     #unbound = false;
     #style = '';
     #nullText = '';
@@ -48,6 +49,7 @@ class TableColumn {
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
         this.#formatPercent = options.formatPercent;
+        this.#formatNumber = options.formatNumber;
         this.#unbound = options.unbound;
         this.#style = options.style || '';
 
@@ -105,6 +107,13 @@ class TableColumn {
                         val = parseFloat(val).formatMoney(2) + '%';
                     } else if (this.#formatPercent === '*100') {
                         val = parseFloat(val * 100).formatMoney(2) + '%';
+                    } else if (this.#formatNumber) {
+                        var dec = 2;
+                        if (this.#formatNumber.constructor.name == 'String') {
+                            dec = parseInt(this.#formatNumber.substr(1));
+                            if (isNaN(dec)) { dec = 2; }
+                        }
+                        val = parseFloat(val).toFixed(dec);
                     }
                 }
             } else {
@@ -341,9 +350,14 @@ function getCellHighlightStyle(object, column, options) {
     var style = '';
     for (var hx = 0; hx < options.cellHighlights.length; hx++) {
         var h = options.cellHighlights[hx];
-        if (!h.columns || h.columns.indexOf(column.name) < 0) {
-            continue;
+        if (!h.columns) {
+            if (h.column != column.name) { continue; }
+        } else {
+            if (h.columns.indexOf(column.name) < 0) { continue; }
         }
+        // if (!h.columns || h.columns.indexOf(column.name) < 0) {
+        //     continue;
+        // }
 
         var rawVal = object[h.column];
         if (h.op == '=') {
