@@ -278,11 +278,11 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
                     if (options.path) {
                         var target = ' target="' + (options.linkTarget || '_self') + '" ';
                         var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-                        cellValue = '<a style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
+                        cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
                         if (options.allowEditCondition) {
-                            if (options.allowEditCondition(objects[i])) { cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
+                            if (options.allowEditCondition(objects[i])) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
                         } else if (options.allowEdit) {
-                            cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
+                            cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
                         }
                         col.width = '30px';
                     }
