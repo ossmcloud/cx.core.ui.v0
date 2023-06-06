@@ -35,7 +35,12 @@
                     <input 
                         class="btn jx-btn-inline" type="button" value="{{b.text}}" 
                         style="{{#if b.style}}{{b.style}}{{/if}}" 
+                        {{#if b.self}}
+                        onclick="location.href='{{b.link}}';" 
+                        {{else}}
                         onclick="window.open('{{b.link}}');" 
+                        {{/if}}
+                        
                         data-dialog-message="{{#if b.dialogMessage}}{{b.dialogMessage}}{{/if}}" />
                     {{else}}
                     <input 
