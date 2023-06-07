@@ -198,10 +198,11 @@ function renderActions(object, options) {
                 }
             }
             var actionToolTip = (action.toolTip) ? `title="${action.toolTip}"` : '';
+            var actionTarget = (action.target) ? `target="${action.target}"` : '';
             if (action.funcName) {
                 tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this, event)" >${action.label}</a>`;
             } else if (action.func) {
-                tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" target="${action.target}" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" ${actionTarget} >${action.label}</a>`;
             } else if (action.link) {
                 var link = action.link;
                 if (link[link.length - 1] == '=') {
@@ -211,7 +212,7 @@ function renderActions(object, options) {
                         link += object[options.primaryKey];
                     }
                 }
-                tBody += `<a class="jx-table-action" style="${action.style || ''}" ${actionToolTip} href="${link}" target="${action.target}" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" style="${action.style || ''}" ${actionToolTip} href="${link}" ${actionTarget} >${action.label}</a>`;
             }
         }
         tBody += '</td>';
