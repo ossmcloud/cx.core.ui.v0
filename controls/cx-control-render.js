@@ -40,7 +40,7 @@ function _renderControl(options, objects) {
             } else if (options.styles && options.styles[colNo - 1]) {
                 renderedControls += ' style="' + options.styles[colNo - 1] + '"';
             } else {
-                if (options.columnCount == 1) { renderedControls += ' style="display: table-row"'; }
+                if (options.columnCount == 1) { renderedControls += ' style="display: block;"'; }
             }
             renderedControls += '>';
             //
