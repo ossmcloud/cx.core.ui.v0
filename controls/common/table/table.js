@@ -95,7 +95,7 @@ class TableColumn {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
                 if (val.constructor.name === 'Number' || !isNaN(parseFloat(val))) {
-                    // TODO: @@REVIEW: encapsulate, used input.js
+                    // @@REVIEW: encapsulate, used input.js
                     if (this.#formatMoney) {
                         var dec = 2;
                         if (this.#formatMoney.constructor.name == 'String') {
