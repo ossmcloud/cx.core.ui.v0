@@ -399,6 +399,7 @@ function getCellHighlightStyle(object, column, options) {
 
         var applied = false;
         var rawVal = object[h.column];
+        if (rawVal && rawVal.constructor.name == 'Number') { rawVal = rawVal.toFixed(2); }
         if (h.op == '=') {
             if (rawVal == h.value) { style += h.style; applied = true; }
         } else if (h.op == '!=') {
