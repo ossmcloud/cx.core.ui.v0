@@ -393,25 +393,27 @@ function getCellHighlightStyle(object, column, options) {
         } else {
             if (h.columns.indexOf(column.name) < 0) { continue; }
         }
-        // if (!h.columns || h.columns.indexOf(column.name) < 0) {
-        //     continue;
-        // }
 
         var applied = false;
         var rawVal = object[h.column];
-        if (rawVal && rawVal.constructor.name == 'Number') { rawVal = rawVal.toFixed(2); }
+        var compareValue = h.value;
+        if (rawVal && rawVal.constructor.name == 'Number') {
+            rawVal = rawVal.roundNumber(2);
+            compareValue = parseFloat(h.value).roundNumber(2);
+        }
+
         if (h.op == '=') {
-            if (rawVal == h.value) { style += h.style; applied = true; }
+            if (rawVal == compareValue) { style += h.style; applied = true; }
         } else if (h.op == '!=') {
-            if (rawVal != h.value) { style += h.style; applied = true; }
+            if (rawVal != compareValue) { style += h.style; applied = true; }
         } else if (h.op == '>') {
-            if (rawVal > h.value) { style += h.style; applied = true; }
+            if (rawVal > compareValue) { style += h.style; applied = true; }
         } else if (h.op == '>=') {
-            if (rawVal >= h.value) { style += h.style; applied = true; }
+            if (rawVal >= compareValue) { style += h.style; applied = true; }
         } else if (h.op == '<') {
-            if (rawVal < h.value) { style += h.style; applied = true; }
+            if (rawVal < compareValue) { style += h.style; applied = true; }
         } else if (h.op == '<=') {
-            if (rawVal <= h.value) { style += h.style; applied = true; }
+            if (rawVal <= compareValue) { style += h.style; applied = true; }
         } else if (h.customStyle) {
             var tStyle = (h.customStyle(object, rawVal, h) || '');
             if (tStyle) {
