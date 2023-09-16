@@ -1,0 +1,27 @@
+{{#if readOnly}}
+<label onclick="$(this).prev().click();">
+    {{labelCheckBox}}
+</label>
+<span id="{{id}}" name="{{name}}" class="jx-inlineText"{{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}>
+    {{#if value}} 
+        &#x2611;
+    {{else}}
+        &#x2610;
+    {{/if}}
+</span>
+{{else}}
+<label onclick="$(this).prev().click();" style="display: block; padding-top: 3px;">
+    {{labelCheckBox}}
+</label>
+<input type="hidden" value="{{#if value}}on{{else}}off{{/if}}" id="{{id}}" name="{{name}}" >
+<input
+    id="{{id}}_show" name="{{name}}_show" class="jx-control" type="checkbox" 
+    {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}
+    {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
+    {{#if value}} checked  {{/if}}
+    {{#if width}} style="width: 30px;" {{/if}}
+    {{#if disabled}} disabled  {{/if}}
+/>
+
+
+{{/if}}

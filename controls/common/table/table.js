@@ -34,6 +34,7 @@ class TableColumn {
     #link = null;
     #toolTip = null;
     #headerToolTip = '';
+    #addValues = [];
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -58,6 +59,7 @@ class TableColumn {
         this.#link = options.link || null;
         this.#toolTip = options.toolTip || null;
         this.#headerToolTip = options.headerToolTip || '';
+        this.#addValues = options.addValues || [];
 
         this.#nullText = (options.nullText === undefined) ? '[NULL]' : options.nullText;
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
@@ -83,6 +85,7 @@ class TableColumn {
     get link() { return this.#link; }
     get toolTip() { return this.#toolTip; }
     get headerToolTip() { return this.#headerToolTip; }
+    get addValues() { return this.#addValues; }
 
     value(object, raw) {
         var val = object[this.name];
@@ -253,6 +256,7 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellColStyle = col.style || '';
+            if (col.input) { cellColStyle += ' padding: 1px 0px 0px 0px;'; }
 
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
@@ -267,67 +271,89 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
                 if (!isNaN(cellValueNo)) { tableTotals[col.name] += cellValueNo };
             }
 
-
-            if (col.type == 'check') {
-                // CHECK: built in check box column
-                cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
-
-            } else if (col.input) {
-                // INPUT: the column has an input control 
-                col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
-                col.input.name = col.input.id;
-
-                col.input.fieldName = col.input.id;
-                col.input.fieldNameDb = col.name;
-
-                col.input.value = objects[i][col.name];
-                col.input.dataAttributes = null;
-                col.input.data = null;
-
-                cellValue = _input.render(col.input);
-                cellColStyle += ' padding: 1px 0px 0px 0px;';
-
-            } else {
-                if (options.path && col.name == options.primaryKey) {
-                    // PRIMARY KEY VIEW EDIT LINKS: we only show this if we have a .path set
-                    var target = ' target="' + (options.linkTarget || '_self') + '" ';
-                    var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-                    cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
-                    if (options.allowEditCondition) {
-                        if (options.allowEditCondition(objects[i])) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
-                    } else if (options.allowEdit) {
-                        cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
+            cellValue = formatCellValue(cellValue, options, col, objects[i]);
+            if (col.addValues && col.addValues.length > 0) {
+                for (var ax = 0; ax < col.addValues.length; ax++) {
+                    var addValueObj = col.addValues[ax];
+                    if (addValueObj.constructor.name == 'String') { addValueObj = { name: addValueObj };                    }
+                    var addValue = formatCellValue(objects[i][addValueObj.name], options, col, objects[i]);
+                    if (addValueObj.style) {
+                        addValue = `<span style="${addValueObj.style}">${addValue}</span>`
                     }
-                    col.width = '30px';
 
-                } else {
-                    // BOOLEAN RENDER: Replace boolean values with 'checked' / 'unchecked' UTF-* chars
-                    if (cellValue === false) { cellValue = '&#x2610;'; }
-                    if (cellValue === true) { cellValue = '&#x2611;'; }
+                    cellValue += `<br />${addValue}`;
 
-                    // CUSTOM LINK:
-                    if (col.link) {
-                        var linkValue = col.value(objects[i]);
-                        // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
-                        if (col.link.valueField) { linkValue = objects[i][col.link.valueField]; }
-                        if (linkValue) {
-                            var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
-                            var linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
-                            linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
-                            cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
-                        }
-
-                    }
                 }
-
-                if (col.toolTip) {
-                    cellToolTip = objects[i][col.toolTip.valueField || col.name] || '';
-                    if (col.toolTip.suppressText) { cellValue = ''; }
-                }
-
-                // CUSTOM STYLE: if a .style is passed then we wrap the value with it 
-                if (objects[i].style) { cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>'; }
             }
+
+            // if (col.type == 'check') {
+            //     // CHECK: built in check box column
+            //     cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
+
+            // } else if (col.input) {
+            //     // INPUT: the column has an input control 
+            //     col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+            //     col.input.name = col.input.id;
+
+            //     col.input.fieldName = col.input.id;
+            //     col.input.fieldNameDb = col.name;
+
+            //     col.input.value = objects[i][col.name];
+            //     col.input.dataAttributes = null;
+            //     col.input.data = null;
+
+            //     cellValue = _input.render(col.input);
+            //     cellColStyle += ' padding: 1px 0px 0px 0px;';
+
+            // } else {
+            //     if (options.path && col.name == options.primaryKey) {
+            //         // PRIMARY KEY VIEW EDIT LINKS: we only show this if we have a .path set
+            //         var target = ' target="' + (options.linkTarget || '_self') + '" ';
+            //         var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
+            //         cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
+            //         if (options.allowEditCondition) {
+            //             if (options.allowEditCondition(objects[i])) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
+            //         } else if (options.allowEdit) {
+            //             cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
+            //         }
+            //         col.width = '30px';
+
+            //     } else {
+            //         // BOOLEAN RENDER: Replace boolean values with 'checked' / 'unchecked' UTF-* chars
+            //         if (cellValue === false) { cellValue = '&#x2610;'; }
+            //         if (cellValue === true) { cellValue = '&#x2611;'; }
+
+            //         // CUSTOM LINK:
+            //         if (col.link) {
+            //             var linkValue = col.value(objects[i]);
+            //             // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
+            //             if (col.link.valueField) { linkValue = objects[i][col.link.valueField]; }
+            //             if (linkValue) {
+            //                 var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
+            //                 var linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
+            //                 linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
+            //                 cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
+            //             }
+
+            //         }
+            //     }
+
+            //     if (col.toolTip) {
+            //         cellToolTip = objects[i][col.toolTip.valueField || col.name] || '';
+            //         if (col.toolTip.suppressText) { cellValue = ''; }
+            //     }
+
+            //     // CUSTOM STYLE: if a .style is passed then we wrap the value with it 
+            //     if (objects[i].style) { cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>'; }
+            // }
+
+            if (col.toolTip) {
+                cellToolTip = objects[i][col.toolTip.valueField || col.name] || '';
+                if (col.toolTip.suppressText) { cellValue = ''; }
+            }
+
+            // CUSTOM STYLE: if a .style is passed then we wrap the value with it
+            if (objects[i].style) { cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>'; }
 
             // now get cell highlight styles and wrap if any
             var cellStyle = getCellHighlightStyle(objects[i], col, options);
@@ -358,6 +384,63 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
     return tBody;
 }
 
+function formatCellValue(cellValue, options, col, object) {
+    if (col.type == 'check') {
+        // CHECK: built in check box column
+        cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
+
+    } else if (col.input) {
+        // INPUT: the column has an input control 
+        col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+        col.input.name = col.input.id;
+
+        col.input.fieldName = col.input.id;
+        col.input.fieldNameDb = col.name;
+
+        col.input.value = objects[i][col.name];
+        col.input.dataAttributes = null;
+        col.input.data = null;
+
+        cellValue = _input.render(col.input);
+       
+
+    } else {
+        if (options.path && col.name == options.primaryKey) {
+            // PRIMARY KEY VIEW EDIT LINKS: we only show this if we have a .path set
+            var target = ' target="' + (options.linkTarget || '_self') + '" ';
+            var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
+            cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
+            if (options.allowEditCondition) {
+                if (options.allowEditCondition(objects[i])) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
+            } else if (options.allowEdit) {
+                cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
+            }
+            col.width = '30px';
+
+        } else {
+            // BOOLEAN RENDER: Replace boolean values with 'checked' / 'unchecked' UTF-* chars
+            if (cellValue === false) { cellValue = '&#x2610;'; }
+            if (cellValue === true) { cellValue = '&#x2611;'; }
+
+            // CUSTOM LINK:
+            if (col.link) {
+                var linkValue = col.value(object);
+                // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
+                if (col.link.valueField) { linkValue = object[col.link.valueField]; }
+                if (linkValue) {
+                    var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
+                    var linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
+                    linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
+                    cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
+                }
+
+            }
+        }
+
+    }
+    return cellValue;
+}
+
 function getHighlightStyle(object, options) {
     var style = '';
     for (var hx = 0; hx < options.highlights.length; hx++) {
@@ -379,7 +462,7 @@ function getHighlightStyle(object, options) {
             style += (h.customStyle(object, rawVal, h) || '');
         }
         if (style) { style += ' '; }
-        
+
     }
     return style;
 }

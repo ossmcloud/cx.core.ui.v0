@@ -1,20 +1,35 @@
 {{#if readOnly}}
-<label onclick="$(this).prev().click();">
+<label onclick="$(this).prev().click();" style="display: block; padding-top: 7px;">
     {{labelCheckBox}}
 </label>
-<span id="{{id}}" name="{{name}}" class="jx-inlineText"{{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}>
+
+<span id="{{id}}" name="{{name}}" {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}>
+    <div style="padding-top: 5px; padding-bottom: 3px;">
+        <div id="jx_{{id}}_check"
+            style="width: 40px; height: 18px; border-radius: 3px; padding: 2px; background-color: var({{#if value}}--action-btn-bg-color{{else}}--element-color-faint{{/if}});">
+            <div id="jx_{{id}}_check_handle"
+                style="width: 20px; height: 18px; border-radius: 3px; background-color: {{#if value}}whitesmoke{{else}}var(--element-color-disabled){{/if}}; margin-left: {{#if value}}18px{{else}}0px{{/if}};">
+            </div>
+        </div>
+    </div>
+
+{{!-- 
+    <span id="{{id}}" name="{{name}}" class="jx-inlineText"{{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}>
     {{#if value}} 
         &#x2611;
     {{else}}
         &#x2610;
-    {{/if}}
+    {{/if}}  
+--}}
 </span>
 {{else}}
-<label onclick="$(this).prev().click();" style="display: block; padding-top: 3px;">
+{{#if labelCheckBox}}
+<label onclick="$(this).prev().click();" style="display: block; padding-top: 7px;">
     {{labelCheckBox}}
 </label>
+{{/if}}
 <input type="hidden" value="{{#if value}}on{{else}}off{{/if}}" id="{{id}}" name="{{name}}" >
-<input
+<input style="display: none;"
     id="{{id}}_show" name="{{name}}_show" class="jx-control" type="checkbox" 
     {{#if fieldNameDb}} data-cx-field-name="{{fieldNameDb}}"{{/if}}
     {{#if inputStyle}} style="{{inputStyle}}"{{/if}}
@@ -23,5 +38,12 @@
     {{#if disabled}} disabled  {{/if}}
 />
 
+<div style="padding-top: 5px; padding-bottom: 3px;">
+    <div id="jx_{{id}}_check" style="width: 40px; height: 18px; border-radius: 3px; padding: 2px; background-color: var({{#if value}}--action-btn-bg-color{{else}}--element-color-faint{{/if}}); cursor: pointer;">
+        <div id="jx_{{id}}_check_handle" style="width: 20px; height: 18px; border-radius: 3px; background-color: {{#if value}}whitesmoke{{else}}var(--element-color-disabled){{/if}}; margin-left: {{#if value}}18px{{else}}0px{{/if}}; cursor: pointer;">
+
+        </div>
+    </div>
+</div>
 
 {{/if}}
