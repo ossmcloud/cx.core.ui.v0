@@ -411,7 +411,7 @@ function formatCellValue(cellValue, options, col, object) {
             var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
             cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
             if (options.allowEditCondition) {
-                if (options.allowEditCondition(objects[i])) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
+                if (options.allowEditCondition(object)) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
             } else if (options.allowEdit) {
                 cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
             }
