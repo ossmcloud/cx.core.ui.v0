@@ -419,8 +419,26 @@ function formatCellValue(cellValue, options, col, object) {
 
         } else {
             // BOOLEAN RENDER: Replace boolean values with 'checked' / 'unchecked' UTF-* chars
-            if (cellValue === false) { cellValue = '&#x2610;'; }
-            if (cellValue === true) { cellValue = '&#x2611;'; }
+            if (cellValue === false) {
+                //cellValue = '&#x2610;';
+                // cellValue = `
+                // <div style="padding-top: 0px; padding-bottom: 0px; display: block;">
+                //     <div style="width: 30px; height: 16px; border-radius: 3px; padding: 2px; background-color: var(--element-color-faint);">
+                //         <div style="width: 15px; height: 14px; border-radius: 3px; background-color: var(--element-color-disabled); margin-left: 13px;">
+                //         </div>
+                //     </div>
+                // </div>`;
+                cellValue = '';
+            }
+            if (cellValue === true) {
+                //cellValue = '&#x2611;';
+                cellValue = `
+                    <div style="display: inline-table; width: 30px; height: 15px; border-radius: 3px; padding: 2px; background-color: var(--action-btn-bg-color);">
+                        <div style="width: 15px; height: 14px; border-radius: 3px; background-color: whitesmoke; margin-left: 13px;">
+                        </div>
+                    </div>
+                `;
+            }
 
             // CUSTOM LINK:
             if (col.link) {
@@ -551,7 +569,7 @@ function render(options, objects, input) {
     formatColumns(objects, options);
     // 
     var tableTotals = {};
-    options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '">';
+    options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '" ' + ((options.tableStyle) ? 'style="' + options.tableStyle + '"' : '') + '>';
     options.table += renderTableHeader(objects, options, tableTotals);
     options.table += renderTableBody(objects, options, tableTotals);
 
