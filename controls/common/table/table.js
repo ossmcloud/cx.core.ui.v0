@@ -275,7 +275,7 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
             if (col.addValues && col.addValues.length > 0) {
                 for (var ax = 0; ax < col.addValues.length; ax++) {
                     var addValueObj = col.addValues[ax];
-                    if (addValueObj.constructor.name == 'String') { addValueObj = { name: addValueObj };                    }
+                    if (addValueObj.constructor.name == 'String') { addValueObj = { name: addValueObj }; }
                     var addValue = formatCellValue(objects[i][addValueObj.name], options, col, objects[i]);
                     if (addValueObj.style) {
                         addValue = `<span style="${addValueObj.style}">${addValue}</span>`
@@ -402,7 +402,7 @@ function formatCellValue(cellValue, options, col, object) {
         col.input.data = null;
 
         cellValue = _input.render(col.input);
-       
+
 
     } else {
         if (options.path && col.name == options.primaryKey) {
@@ -447,9 +447,17 @@ function formatCellValue(cellValue, options, col, object) {
                 if (col.link.valueField) { linkValue = object[col.link.valueField]; }
                 if (linkValue) {
                     var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
-                    var linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
-                    linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
-                    cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
+                    var linkUrl = '';
+                    if (col.link.onclick) {
+                        linkUrl = col.link.onclick.replace(linkPlaceHolder, linkValue);
+                        linkUrl = `cx.clientExec('${linkUrl}', ${object[options.primaryKey]} || this, event)`;
+                        cellValue = `<span style="cursor: pointer;" onclick="${linkUrl}">${col.link.text}</span>`;
+                    } else {
+                        linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
+                        linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
+                        cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
+                    }
+
                 }
 
             }
