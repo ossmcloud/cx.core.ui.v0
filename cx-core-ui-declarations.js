@@ -15,6 +15,7 @@ const _controlType = {
     FORM: 'form',
     GROUP: 'controlGroup',
     HIDDEN: 'inputHidden',
+    HTML: 'html',
 }
 
 module.exports = {

@@ -52,14 +52,10 @@ function _renderControl(options, objects) {
                 if (!controlArray[cx]) { continue; }
                 if (!controlArray[cx].column) { controlArray[cx].column = 1; }
                 if (controlArray[cx].column == colNo) {
-                    if (controlArray[cx].html) {
-                        renderedControls += html;
-                    } else {
-                        if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
-                        if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
-                        if (controlArray[cx].noRender === true) { continue; }
-                        renderedControls += _renderControl(controlArray[cx], objects);
-                    }
+                    if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
+                    if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
+                    if (controlArray[cx].noRender === true) { continue; }
+                    renderedControls += _renderControl(controlArray[cx], objects);
                 }
             }
             renderedControls += '</div>';

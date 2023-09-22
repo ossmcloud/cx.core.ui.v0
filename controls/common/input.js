@@ -59,6 +59,7 @@ function detectControlValue(options, objects) {
 }
 
 function detectControlType(options, objects) {
+    if (options.html) { return _declarations.ControlType.HTML; }
     if (options.type) { return options.type; }
     if (options.inputType) { return options.inputType; }
     if (Array.isArray(options.items)) { return _declarations.ControlType.DROPDOWN; }
@@ -169,6 +170,8 @@ function _render(options, objects) {
     options.value = detectControlValue(options, objects);
     options.type = detectControlType(options, objects);
     formatValue(options);
+
+    if (options.html) { return options.html; }
     
     if (options.type == _declarations.ControlType.CHECK) {
         options.minHeight = '50px';
