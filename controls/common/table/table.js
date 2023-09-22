@@ -271,12 +271,12 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
                 if (!isNaN(cellValueNo)) { tableTotals[col.name] += cellValueNo };
             }
 
-            cellValue = formatCellValue(cellValue, options, col, objects[i]);
+            cellValue = formatCellValue(cellValue, options, col, objects, rowTemplate, i);
             if (col.addValues && col.addValues.length > 0) {
                 for (var ax = 0; ax < col.addValues.length; ax++) {
                     var addValueObj = col.addValues[ax];
                     if (addValueObj.constructor.name == 'String') { addValueObj = { name: addValueObj }; }
-                    var addValue = formatCellValue(objects[i][addValueObj.name], options, col, objects[i]);
+                    var addValue = formatCellValue(objects[i][addValueObj.name], options, col, objects, rowTemplate, i);
                     if (addValueObj.style) {
                         addValue = `<span style="${addValueObj.style}">${addValue}</span>`
                     }
@@ -384,7 +384,8 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
     return tBody;
 }
 
-function formatCellValue(cellValue, options, col, object) {
+function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
+    var object = objects[i];
     if (col.type == 'check') {
         // CHECK: built in check box column
         cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
