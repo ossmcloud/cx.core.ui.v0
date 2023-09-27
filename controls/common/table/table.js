@@ -286,69 +286,11 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
                 }
             }
 
-            // if (col.type == 'check') {
-            //     // CHECK: built in check box column
-            //     cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
-
-            // } else if (col.input) {
-            //     // INPUT: the column has an input control 
-            //     col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
-            //     col.input.name = col.input.id;
-
-            //     col.input.fieldName = col.input.id;
-            //     col.input.fieldNameDb = col.name;
-
-            //     col.input.value = objects[i][col.name];
-            //     col.input.dataAttributes = null;
-            //     col.input.data = null;
-
-            //     cellValue = _input.render(col.input);
-            //     cellColStyle += ' padding: 1px 0px 0px 0px;';
-
-            // } else {
-            //     if (options.path && col.name == options.primaryKey) {
-            //         // PRIMARY KEY VIEW EDIT LINKS: we only show this if we have a .path set
-            //         var target = ' target="' + (options.linkTarget || '_self') + '" ';
-            //         var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-            //         cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
-            //         if (options.allowEditCondition) {
-            //             if (options.allowEditCondition(objects[i])) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
-            //         } else if (options.allowEdit) {
-            //             cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
-            //         }
-            //         col.width = '30px';
-
-            //     } else {
-            //         // BOOLEAN RENDER: Replace boolean values with 'checked' / 'unchecked' UTF-* chars
-            //         if (cellValue === false) { cellValue = '&#x2610;'; }
-            //         if (cellValue === true) { cellValue = '&#x2611;'; }
-
-            //         // CUSTOM LINK:
-            //         if (col.link) {
-            //             var linkValue = col.value(objects[i]);
-            //             // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
-            //             if (col.link.valueField) { linkValue = objects[i][col.link.valueField]; }
-            //             if (linkValue) {
-            //                 var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
-            //                 var linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
-            //                 linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
-            //                 cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
-            //             }
-
-            //         }
-            //     }
-
-            //     if (col.toolTip) {
-            //         cellToolTip = objects[i][col.toolTip.valueField || col.name] || '';
-            //         if (col.toolTip.suppressText) { cellValue = ''; }
-            //     }
-
-            //     // CUSTOM STYLE: if a .style is passed then we wrap the value with it 
-            //     if (objects[i].style) { cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>'; }
-            // }
-
             if (col.toolTip) {
-                cellToolTip = objects[i][col.toolTip.valueField || col.name] || '';
+                cellToolTip = (objects[i][col.toolTip.valueField || col.name] || '');
+                if (cellToolTip) {
+                    cellToolTip = cellToolTip.toString().replaceAll('"', '');
+                }
                 if (col.toolTip.suppressText) { cellValue = ''; }
             }
 
