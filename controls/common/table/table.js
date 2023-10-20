@@ -90,8 +90,8 @@ class TableColumn {
     value(object, raw) {
         var val = object[this.name];
         if (this.unbound) { return ''; }
-        if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
-        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
+        if (val === null) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
+        if (val === undefined) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
         if (this.lookUps.length > 0) {
             for (var lx = 0; lx < this.lookUps.length; lx++) {
                 if (this.lookUps[lx].value == val) {
@@ -330,7 +330,8 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
     var object = objects[i];
     if (col.type == 'check') {
         // CHECK: built in check box column
-        cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
+        var checked = (object[col.name]) ? ' checked' : '';
+        cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;" ${checked}>`;
 
     } else if (col.input) {
         // INPUT: the column has an input control 
