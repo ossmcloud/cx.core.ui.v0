@@ -21,8 +21,7 @@ function formatOptions(options) {
     if (options.fieldName == undefined && options.id != undefined) { options.fieldName = options.id; }
     if (options.name == undefined && options.fieldName != undefined) { options.name = options.fieldName; }
     if (options.id == undefined && options.fieldName != undefined) { options.id = options.fieldName; }
-   
-    // TODO: should we generate some unique ID
+       
     if (!options.id) { options.id = 'cx_control'; }
     if (!options.name) { options.name = options.id; }
 
@@ -60,6 +59,7 @@ function detectControlValue(options, objects) {
 }
 
 function detectControlType(options, objects) {
+    if (options.html) { return _declarations.ControlType.HTML; }
     if (options.type) { return options.type; }
     if (options.inputType) { return options.inputType; }
     if (Array.isArray(options.items)) { return _declarations.ControlType.DROPDOWN; }
@@ -120,13 +120,13 @@ function formatValue(options) {
             //options.rows = 5;
         }
         if (options.readOnly && options.value && options.value.replaceAll) {
-            // TODO: if spaces are replaced with &nbsp; word wrap does not work
-            //       not even sure why i did this
+            // @@REVIEW: if spaces are replaced with &nbsp; word wrap does not work
+            //           not even sure why i did this
             //options.value = options.value.replaceAll(' ', '&nbsp;');
             options.value = options.value.replaceAll('\n', '<br />');
         }
     } else if (options.type == _declarations.ControlType.NUMERIC) {
-        // TODO: @@REVIEW: encapsulate, used table.js
+        // @@REVIEW: encapsulate, used table.js
         var val = options.value;
         if (options.readOnly) {
             if (options.formatMoney != undefined) {
@@ -170,6 +170,8 @@ function _render(options, objects) {
     options.value = detectControlValue(options, objects);
     options.type = detectControlType(options, objects);
     formatValue(options);
+
+    if (options.html) { return options.html; }
     
     if (options.type == _declarations.ControlType.CHECK) {
         options.minHeight = '50px';
@@ -197,4 +199,5 @@ function _render(options, objects) {
 module.exports = {
     CtrlType: _declarations.ControlType,
     render: _render
+
 }

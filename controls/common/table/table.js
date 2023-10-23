@@ -25,11 +25,16 @@ class TableColumn {
     #fontSize = null;
     #formatMoney = null;
     #formatPercent = null;
+    #formatNumber = null;
     #unbound = false;
     #style = '';
     #nullText = '';
     #undefinedText = '';
     #addTotals = false;
+    #link = null;
+    #toolTip = null;
+    #headerToolTip = '';
+    #addValues = [];
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -48,8 +53,13 @@ class TableColumn {
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
         this.#formatPercent = options.formatPercent;
+        this.#formatNumber = options.formatNumber;
         this.#unbound = options.unbound;
         this.#style = options.style || '';
+        this.#link = options.link || null;
+        this.#toolTip = options.toolTip || null;
+        this.#headerToolTip = options.headerToolTip || '';
+        this.#addValues = options.addValues || [];
 
         this.#nullText = (options.nullText === undefined) ? '[NULL]' : options.nullText;
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
@@ -72,13 +82,16 @@ class TableColumn {
     get unbound() { return this.#unbound; }
     get style() { return this.#style; }
     get addTotals() { return this.#addTotals; }
-
+    get link() { return this.#link; }
+    get toolTip() { return this.#toolTip; }
+    get headerToolTip() { return this.#headerToolTip; }
+    get addValues() { return this.#addValues; }
 
     value(object, raw) {
         var val = object[this.name];
         if (this.unbound) { return ''; }
-        if (val === null) { return '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
-        if (val === undefined) { return '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
+        if (val === null) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
+        if (val === undefined) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
         if (this.lookUps.length > 0) {
             for (var lx = 0; lx < this.lookUps.length; lx++) {
                 if (this.lookUps[lx].value == val) {
@@ -93,7 +106,7 @@ class TableColumn {
                     val = _core.date.format({ date: val, inverted: true, showTime: val.hasTime(), dateTimeSep: ' - ' });
                 }
                 if (val.constructor.name === 'Number' || !isNaN(parseFloat(val))) {
-                    // TODO: @@REVIEW: encapsulate, used input.js
+                    // @@REVIEW: encapsulate, used input.js
                     if (this.#formatMoney) {
                         var dec = 2;
                         if (this.#formatMoney.constructor.name == 'String') {
@@ -105,6 +118,13 @@ class TableColumn {
                         val = parseFloat(val).formatMoney(2) + '%';
                     } else if (this.#formatPercent === '*100') {
                         val = parseFloat(val * 100).formatMoney(2) + '%';
+                    } else if (this.#formatNumber) {
+                        var dec = 2;
+                        if (this.#formatNumber.constructor.name == 'String') {
+                            dec = parseInt(this.#formatNumber.substr(1));
+                            if (isNaN(dec)) { dec = 2; }
+                        }
+                        val = parseFloat(val).toFixed(dec);
                     }
                 }
             } else {
@@ -145,7 +165,7 @@ function renderTableHeader(objects, options, tableTotals) {
     var tHead = '<thead><tr>';
     if (options.actionsTitle == undefined) { options.actionsTitle = 'actions'; }
     if (options.listActions && options.actionsShowFirst) {
-        tHead += `<th style="text-align: center; width: 50px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
+        tHead += `<th style="text-align: center; width: 30px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
     }
     if (options.actions && options.actionsShowFirst) {
         tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`;
@@ -157,10 +177,10 @@ function renderTableHeader(objects, options, tableTotals) {
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         var textAlign = ` style="text-align: ${col.align};"`;
-        tHead += '<th ' + dataFieldName + sortableClass + textAlign + '>';
+        tHead += '<th ' + dataFieldName + sortableClass + textAlign + 'title="' + col.headerToolTip + '">';
         if (col.addTotals) {
             tableTotals[col.name] = 0;
-            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name +'}</span></span>';
+            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name + '}</span></span>';
             tHead += '<span style="display: block">' + col.title + '</span>';
         } else {
             tHead += col.title;
@@ -180,7 +200,7 @@ function renderTableHeader(objects, options, tableTotals) {
 function renderActions(object, options) {
     var tBody = '';
     if (options.actions) {
-        tBody += '<td style="text-align: center; width: 50px;">';
+        tBody += '<td style="text-align: center; width: 30px;">';
         for (var ax = 0; ax < options.actions.length; ax++) {
             var action = options.actions[ax];
             if (options.allowActionCondition) {
@@ -189,10 +209,11 @@ function renderActions(object, options) {
                 }
             }
             var actionToolTip = (action.toolTip) ? `title="${action.toolTip}"` : '';
+            var actionTarget = (action.target) ? `target="${action.target}"` : '';
             if (action.funcName) {
                 tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this, event)" >${action.label}</a>`;
             } else if (action.func) {
-                tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" target="${action.target}" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" ${actionTarget} >${action.label}</a>`;
             } else if (action.link) {
                 var link = action.link;
                 if (link[link.length - 1] == '=') {
@@ -202,7 +223,7 @@ function renderActions(object, options) {
                         link += object[options.primaryKey];
                     }
                 }
-                tBody += `<a class="jx-table-action" ${actionToolTip} href="${link}" target="${action.target}" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" style="${action.style || ''}" ${actionToolTip} href="${link}" ${actionTarget} >${action.label}</a>`;
             }
         }
         tBody += '</td>';
@@ -235,69 +256,62 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
         for (var j = 0; j < options.columns.length; j++) {
             var col = options.columns[j];
             var cellColStyle = col.style || '';
+            if (col.input) { cellColStyle += ' padding: 1px 0px 0px 0px;'; }
 
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
             }
-            
+
+            var cellToolTip = '';
             var cellValue = col.value(objects[i]);
             if (col.addTotals) {
                 if (!tableTotals[col.name]) { tableTotals[col.name] = 0; }
                 var cellValueNo = parseFloat(objects[i][col.name]);
                 if (!isNaN(cellValueNo)) { tableTotals[col.name] += cellValueNo };
             }
-            if (col.type == 'check') {
-                cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;">`;
 
-            } else if (col.input) {
-                col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
-                col.input.name = col.input.id;
-                
-                col.input.fieldName = col.input.id;
-                col.input.fieldNameDb = col.name;
-                
-                col.input.value = objects[i][col.name];
-                col.input.dataAttributes = null;
-                col.input.data = null;
-
-                cellValue = _input.render(col.input);
-                cellColStyle += ' padding: 1px 0px 0px 0px;';
-
-            } else {
-                if (col.name == options.primaryKey) {
-                    if (options.path) {
-                        var target = ' target="' + (options.linkTarget || '_self') + '" ';
-                        var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
-                        cellValue = '<a style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
-                        if (options.allowEditCondition) {
-                            if (options.allowEditCondition(objects[i])) { cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
-                        } else if (options.allowEdit) {
-                            cellValue += ' <a style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
-                        }
-                        col.width = '30px';
+            cellValue = formatCellValue(cellValue, options, col, objects, rowTemplate, i);
+            if (col.addValues && col.addValues.length > 0) {
+                for (var ax = 0; ax < col.addValues.length; ax++) {
+                    var addValueObj = col.addValues[ax];
+                    if (addValueObj.constructor.name == 'String') { addValueObj = { name: addValueObj }; }
+                    var addValue = formatCellValue(objects[i][addValueObj.name], options, col, objects, rowTemplate, i);
+                    if (addValueObj.style) {
+                        addValue = `<span style="${addValueObj.style}">${addValue}</span>`
                     }
-                } else {
-                    if (cellValue === false) { cellValue = '&#x2610;'; }
-                    if (cellValue === true) { cellValue = '&#x2611;'; }
-                    if (objects[i].style) {
-                        cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>';
-                    }
+
+                    cellValue += `<br />${addValue}`;
+
                 }
             }
 
-            //
+            if (col.toolTip) {
+                cellToolTip = (objects[i][col.toolTip.valueField || col.name] || '');
+                if (cellToolTip) {
+                    cellToolTip = cellToolTip.toString().replaceAll('"', '');
+                }
+                if (col.toolTip.suppressText) { cellValue = ''; }
+            }
+
+            // CUSTOM STYLE: if a .style is passed then we wrap the value with it
+            if (objects[i].style) { cellValue = '<span style="' + objects[i].style + '">' + cellValue + '</span>'; }
+
+            // now get cell highlight styles and wrap if any
             var cellStyle = getCellHighlightStyle(objects[i], col, options);
             if (cellStyle) { cellValue = `<span style="${cellStyle}">${cellValue}</span>`; }
 
+            // NOTE: if we have list actions and this is the 1st visible cell, 
+            //          then we add an hidden input control with the line's id so that actions can safely and efficiently retrieve it
             if (options.listActions && jj == 0) {
-                var hiddenId = 'cxlist_' +  options.id + '_lineId_' + ((rowTemplate) ? 'tmpl_idx' : i);
+                var hiddenId = 'cxlist_' + options.id + '_lineId_' + ((rowTemplate) ? 'tmpl_idx' : i);
                 cellValue += `<input type="hidden" id="${hiddenId}" name="${hiddenId}" value="${objects[i].id}">`;
             }
             jj++;
-            
-            tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')} ${cellColStyle}">${cellValue}</td>`;
-            
+
+            // build table cell
+            tRow += `<td style="width: ${col.width}; text-align: ${col.align}; ${(col.fontSize ? 'font-size: ' + col.fontSize + ';' : '')} ${cellColStyle}" title="${cellToolTip}">${cellValue}</td>`;
+
         }
 
         tRow = tRow.replace('[$DATA$]', dataAttr);
@@ -310,6 +324,91 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
     }
     tBody += ((rowTemplate) ? '</tfoot>' : '</tbody>');
     return tBody;
+}
+
+function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
+    var object = objects[i];
+    if (col.type == 'check') {
+        // CHECK: built in check box column
+        var checked = (object[col.name]) ? ' checked' : '';
+        cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;" ${checked}>`;
+
+    } else if (col.input) {
+        // INPUT: the column has an input control 
+        col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+        col.input.name = col.input.id;
+
+        col.input.fieldName = col.input.id;
+        col.input.fieldNameDb = col.name;
+
+        col.input.value = objects[i][col.name];
+        col.input.dataAttributes = null;
+        col.input.data = null;
+
+        cellValue = _input.render(col.input);
+
+
+    } else {
+        if (options.path && col.name == options.primaryKey) {
+            // PRIMARY KEY VIEW EDIT LINKS: we only show this if we have a .path set
+            var target = ' target="' + (options.linkTarget || '_self') + '" ';
+            var link = options.path + ((options.path.indexOf('?') < 0) ? '?' : '&') + 'id=' + cellValue;
+            cellValue = '<a tabindex="-1" style="text-decoration: none;"' + target + 'href="' + link + '" title="view...">&#128269;</a>';
+            if (options.allowEditCondition) {
+                if (options.allowEditCondition(object)) { cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>'; }
+            } else if (options.allowEdit) {
+                cellValue += ' <a tabindex="-1" style="text-decoration: none;" ' + target + 'href="' + link + '&e=T" title="edit...">&#x270E;</a>';
+            }
+            col.width = '30px';
+
+        } else {
+            // BOOLEAN RENDER: Replace boolean values with 'checked' / 'unchecked' UTF-* chars
+            if (cellValue === false) {
+                //cellValue = '&#x2610;';
+                // cellValue = `
+                // <div style="padding-top: 0px; padding-bottom: 0px; display: block;">
+                //     <div style="width: 30px; height: 16px; border-radius: 3px; padding: 2px; background-color: var(--element-color-faint);">
+                //         <div style="width: 15px; height: 14px; border-radius: 3px; background-color: var(--element-color-disabled); margin-left: 13px;">
+                //         </div>
+                //     </div>
+                // </div>`;
+                cellValue = '';
+            }
+            if (cellValue === true) {
+                //cellValue = '&#x2611;';
+                cellValue = `
+                    <div style="display: inline-table; width: 30px; height: 15px; border-radius: 3px; padding: 2px; background-color: var(--action-btn-bg-color);">
+                        <div style="width: 15px; height: 14px; border-radius: 3px; background-color: whitesmoke; margin-left: 13px;">
+                        </div>
+                    </div>
+                `;
+            }
+
+            // CUSTOM LINK:
+            if (col.link) {
+                var linkValue = col.value(object);
+                // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
+                if (col.link.valueField) { linkValue = object[col.link.valueField]; }
+                if (linkValue) {
+                    var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
+                    var linkUrl = '';
+                    if (col.link.onclick) {
+                        linkUrl = col.link.onclick.replace(linkPlaceHolder, linkValue);
+                        linkUrl = `cx.clientExec('${linkUrl}', ${object[options.primaryKey]} || this, event)`;
+                        cellValue = `<span style="cursor: pointer;" onclick="${linkUrl}">${col.link.text}</span>`;
+                    } else {
+                        linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
+                        linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
+                        cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
+                    }
+
+                }
+
+            }
+        }
+
+    }
+    return cellValue;
 }
 
 function getHighlightStyle(object, options) {
@@ -333,6 +432,7 @@ function getHighlightStyle(object, options) {
             style += (h.customStyle(object, rawVal, h) || '');
         }
         if (style) { style += ' '; }
+
     }
     return style;
 }
@@ -341,27 +441,42 @@ function getCellHighlightStyle(object, column, options) {
     var style = '';
     for (var hx = 0; hx < options.cellHighlights.length; hx++) {
         var h = options.cellHighlights[hx];
-        if (!h.columns || h.columns.indexOf(column.name) < 0) {
-            continue;
+        if (!h.columns) {
+            if (h.column != column.name) { continue; }
+        } else {
+            if (h.columns.indexOf(column.name) < 0) { continue; }
         }
 
+        var applied = false;
         var rawVal = object[h.column];
+        var compareValue = h.value;
+        if (rawVal && rawVal.constructor.name == 'Number') {
+            rawVal = rawVal.roundNumber(2);
+            compareValue = parseFloat(h.value).roundNumber(2);
+        }
+
         if (h.op == '=') {
-            if (rawVal == h.value) { style += h.style }
+            if (rawVal == compareValue) { style += h.style; applied = true; }
         } else if (h.op == '!=') {
-            if (rawVal != h.value) { style += h.style }
+            if (rawVal != compareValue) { style += h.style; applied = true; }
         } else if (h.op == '>') {
-            if (rawVal > h.value) { style += h.style; }
+            if (rawVal > compareValue) { style += h.style; applied = true; }
         } else if (h.op == '>=') {
-            if (rawVal >= h.value) { style += h.style; }
+            if (rawVal >= compareValue) { style += h.style; applied = true; }
         } else if (h.op == '<') {
-            if (rawVal < h.value) { style += h.style; }
+            if (rawVal < compareValue) { style += h.style; applied = true; }
         } else if (h.op == '<=') {
-            if (rawVal <= h.value) { style += h.style; }
+            if (rawVal <= compareValue) { style += h.style; applied = true; }
         } else if (h.customStyle) {
-            style += (h.customStyle(object, rawVal, h) || '');
+            var tStyle = (h.customStyle(object, rawVal, h) || '');
+            if (tStyle) {
+                applied = true;
+                style += tStyle;
+            }
+
         }
         if (style) { style += ' '; }
+        if (h.stop && applied) { break; }
     }
     return style;
 }
@@ -406,7 +521,7 @@ function render(options, objects, input) {
     formatColumns(objects, options);
     // 
     var tableTotals = {};
-    options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '">';
+    options.table = '<table id="' + options.id + '" class="jx-table ' + options.fixHeadClass + '" ' + ((options.tableStyle) ? 'style="' + options.tableStyle + '"' : '') + '>';
     options.table += renderTableHeader(objects, options, tableTotals);
     options.table += renderTableBody(objects, options, tableTotals);
 

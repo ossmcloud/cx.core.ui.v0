@@ -21,9 +21,13 @@ function _renderTableFilters(options) {
     var filtersHtml = '';
     for (var fx = 0; fx < options.filters.length; fx++) {
         var filter = options.filters[fx];
-        filter.inline = true;
-        filter.value = options.query[filter.fieldName] || filter.value;
-        filtersHtml += _renderControl(filter);
+        if (filter.html) {
+            filtersHtml += filter.html;   
+        } else {
+            filter.inline = true;
+            filter.value = options.query[filter.fieldName] || filter.value;
+            filtersHtml += _renderControl(filter);
+        }
     }
     return filtersHtml;
 }
@@ -40,7 +44,7 @@ function _renderControl(options, objects) {
             } else if (options.styles && options.styles[colNo - 1]) {
                 renderedControls += ' style="' + options.styles[colNo - 1] + '"';
             } else {
-                if (options.columnCount == 1) { renderedControls += ' style="display: table-row"'; }
+                if (options.columnCount == 1) { renderedControls += ' style="display: block;"'; }
             }
             renderedControls += '>';
             //
@@ -48,14 +52,10 @@ function _renderControl(options, objects) {
                 if (!controlArray[cx]) { continue; }
                 if (!controlArray[cx].column) { controlArray[cx].column = 1; }
                 if (controlArray[cx].column == colNo) {
-                    if (controlArray[cx].html) {
-                        renderedControls += html;
-                    } else {
-                        if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
-                        if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
-                        if (controlArray[cx].noRender === true) { continue; }
-                        renderedControls += _renderControl(controlArray[cx], objects);
-                    }
+                    if (controlArray[cx].readOnly == undefined) { controlArray[cx].readOnly = options.readOnly; }
+                    if (controlArray[cx].disabled == undefined) { controlArray[cx].disabled = options.disabled; }
+                    if (controlArray[cx].noRender === true) { continue; }
+                    renderedControls += _renderControl(controlArray[cx], objects);
                 }
             }
             renderedControls += '</div>';

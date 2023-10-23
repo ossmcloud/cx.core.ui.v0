@@ -5,7 +5,8 @@ const _form = require('./form/form');
 const _controls = require('./controls/cx-control-render');
 const _calendarEx = require('./controls/calendar/calendar');
 
-// TODO: CX-UI: Refactor
+
+// @@CLEAN-UP: we should remove this
 const _calendar = require('./controls_old/calendar/calendar');
 
 
