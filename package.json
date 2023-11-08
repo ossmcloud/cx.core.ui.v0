@@ -17,7 +17,7 @@
     },
     "homepage": "https://github.com/ossmcloud/cx.core.ui.v0#readme",
     "dependencies": {
-        "cx-core": "git+https://github.com/ossmcloud/cx.core.v0.git",
+        "cx-core": "git+https://github.com/ossmcloud/cx.core.v0.git#live",
         "handlebars": "^4.7.6"
     }
 }
