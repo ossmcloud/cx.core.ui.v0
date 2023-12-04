@@ -8,17 +8,19 @@
     {{#unless hideTitlePanel}}
     <div id="{{id}}_title_container" class="jx-table-title-outer-container" style="{{cssTitleOuterStyle}}">
         <div id="{{id}}_title_container" class="jx-table-title-container" style="{{cssTitleStyle}}">
-            <span class="{{cssTitle}}">{{{title}}}</span>
-            {{#if allowNew}}
-                <input type="button" id="{{id}}_record_new" class="btn form-inline" style="margin-bottom: 5px; 
-                {{#if title}}
-                    margin-left: 17px;
+            <span class="jx-table-title {{cssTitle}}">{{{title}}}</span>
+            <div class="jx-table-header-buttons">
+                {{#if allowNew}}
+                    <input type="button" id="{{id}}_record_new" class="btn form-inline" style="margin-bottom: 0px; 
+                    {{#if title}}
+                        margin-left: 0px;
+                    {{/if}}
+                    " value="new {{recordTitle}}" />
                 {{/if}}
-                " value="new {{recordTitle}}" />
-            {{/if}}
-            {{#each showButtons as | b |}}
-                <input class="btn form-inline" type="button" value="{{{b.text}}}" onclick="cx.clientExec('{{b.function}}', this);">
-            {{/each}}
+                {{#each showButtons as | b |}}
+                    <input class="btn form-inline" type="button" value="{{{b.text}}}" onclick="cx.clientExec('{{b.function}}', this);">
+                {{/each}}
+            </div>
         </div>
         <div id="{{id}}_count_container" class="jx-table-count-container" style="{{cssTitleStyle}}">
             {{#unless noCount}}
