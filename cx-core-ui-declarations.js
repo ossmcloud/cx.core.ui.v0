@@ -16,6 +16,7 @@ const _controlType = {
     GROUP: 'controlGroup',
     HIDDEN: 'inputHidden',
     HTML: 'html',
+    PASSWORD: 'password',
 }
 
 module.exports = {
