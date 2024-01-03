@@ -189,7 +189,9 @@ function _render(options, objects) {
     //     options.htmlType = 'date';
     // }
 
-    var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, options.type + '.hbs'), 'utf8'));
+    var viewName = (options.type == _declarations.ControlType.PASSWORD) ? _declarations.ControlType.TEXT : options.type;
+
+    var hTmpl = _h.compile(_fs.readFileSync(_path.join(__dirname, viewName + '.hbs'), 'utf8'));
     options.content = hTmpl(options);
     return _inputBase.render(options);
 

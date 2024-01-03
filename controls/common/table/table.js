@@ -399,7 +399,7 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
                     } else {
                         linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
                         linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
-                        cellValue = `<a href="${linkUrl}" target="_blank" >${cellValue}</a>`;
+                        cellValue = `<a class="jx-list-view-link" href="${linkUrl}" target="_blank" >${col.link.text || cellValue}</a>`;
                     }
 
                 }

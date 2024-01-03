@@ -3,6 +3,7 @@
 const _declarations = require('./cx-core-ui-declarations');
 const _form = require('./form/form');
 const _controls = require('./controls/cx-control-render');
+const _json = require('./controls/cx-json-render');
 const _calendarEx = require('./controls/calendar/calendar');
 
 
@@ -37,4 +38,5 @@ module.exports = {
         if (!options) { options = {}; }
         return _calendarEx.render(options);
     },
+    renderJson: _json.render,
 }
