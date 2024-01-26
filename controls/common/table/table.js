@@ -341,9 +341,14 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
         col.input.fieldName = col.input.id;
         col.input.fieldNameDb = col.name;
 
-        col.input.value = objects[i][col.name];
+        if (col.lookUps && col.lookUps.length > 0) {
+            col.input.value = cellValue;
+        } else {
+            col.input.value = objects[i][col.name];        
+        }
         col.input.dataAttributes = null;
         col.input.data = null;
+        
 
         cellValue = _input.render(col.input);
 
@@ -395,7 +400,7 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
                     if (col.link.onclick) {
                         linkUrl = col.link.onclick.replace(linkPlaceHolder, linkValue);
                         linkUrl = `cx.clientExec('${linkUrl}', ${object[options.primaryKey]} || this, event)`;
-                        cellValue = `<span style="cursor: pointer;" onclick="${linkUrl}">${col.link.text}</span>`;
+                        cellValue = `<span style="cursor: pointer;" onclick="${linkUrl}">${col.link.text || cellValue}</span>`;
                     } else {
                         linkUrl = (col.link.constructor.name == 'String') ? col.link : col.link.url;
                         linkUrl = linkUrl.replace(linkPlaceHolder, linkValue);
