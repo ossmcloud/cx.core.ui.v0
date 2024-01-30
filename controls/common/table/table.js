@@ -22,6 +22,7 @@ class TableColumn {
     #lookUps = [];
     #dataHidden = false;
     #input = null;
+    #inputHidden = null;
     #fontSize = null;
     #formatMoney = null;
     #formatPercent = null;
@@ -50,6 +51,7 @@ class TableColumn {
         this.#lookUps = options.lookUps || [];
         this.#dataHidden = options.dataHidden || null;
         this.#input = options.input || null;
+        this.#inputHidden = options.inputHidden || null;
         this.#fontSize = options.fontSize || null;
         this.#formatMoney = options.formatMoney;
         this.#formatPercent = options.formatPercent;
@@ -72,6 +74,7 @@ class TableColumn {
     get align() { return this.#align; }
     get dataHidden() { return this.#dataHidden; }
     get input() { return this.#input; }
+    get inputHidden() { return this.#inputHidden; }
     get fontSize() { return this.#fontSize; }
     get width() {
         return this.#width;
@@ -334,22 +337,30 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
         cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;" ${checked}>`;
 
     } else if (col.input) {
-        // INPUT: the column has an input control 
-        col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+        
+        
+        if (col.input.fieldName && col.input.fieldName != col.input.id) {
+            // INPUT: the column has an input control but bound to different field
+            col.input.id = 'cxlist_' + options.id + '_' + col.input.fieldName + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+            col.input.value = objects[i][col.input.fieldName];
+        } else {
+            // INPUT: the column has an input control 
+            col.input.id = 'cxlist_' + options.id + '_' + col.name + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
+            col.input.fieldName = col.input.id;
+            col.input.fieldNameDb = col.name;
+
+            if (col.lookUps && col.lookUps.length > 0) {
+                col.input.value = cellValue;
+            } else {
+                col.input.value = objects[i][col.name];
+            }
+        }
         col.input.name = col.input.id;
 
-        col.input.fieldName = col.input.id;
-        col.input.fieldNameDb = col.name;
-
-        if (col.lookUps && col.lookUps.length > 0) {
-            col.input.value = cellValue;
-        } else {
-            col.input.value = objects[i][col.name];        
-        }
+      
         col.input.dataAttributes = null;
         col.input.data = null;
         
-
         cellValue = _input.render(col.input);
 
 
