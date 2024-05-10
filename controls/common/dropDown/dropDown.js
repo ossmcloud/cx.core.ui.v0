@@ -4,6 +4,7 @@ const _fs = require('fs');
 const _path = require('path');
 const _h = require('handlebars');
 const _inputBase = require('../../base/inputBase/inputBase');
+const _core = require('cx-core');
 
 function _render(options) {
     var items = [];
@@ -22,6 +23,11 @@ function _render(options) {
         if (item.value === undefined || item.text === undefined) {
             items.push({ value: item, text: item });
         } else {
+            if (item.object) {
+                item.object = _core.text.toBase64(JSON.stringify(item.object))
+            } else {
+                item.object = '';
+            }
             items.push(item);
         }
     });

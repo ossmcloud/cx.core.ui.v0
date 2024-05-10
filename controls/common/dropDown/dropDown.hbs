@@ -17,7 +17,7 @@
     {{!-- <div id="{{id}}_dropDown" name="{{fieldName}}" class="jx-drop-down"> --}}
     <div id="{{id}}_dropDown" class="jx-drop-down">
         {{#each items}}
-            <div data-value="{{this.value}}" class="jx-drop-down-item">{{this.text}}</div>
+            <div data-value="{{this.value}}"  data-object="{{this.object}}" class="jx-drop-down-item">{{this.text}}</div>
         {{/each}}
     </div>
     
