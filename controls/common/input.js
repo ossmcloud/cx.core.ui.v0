@@ -8,7 +8,7 @@ const _inputBase = require('../base/inputBase/inputBase');
 const _dropDown = require('./dropDown/dropDown');
 const _table = require('./table/table');
 const _core = require('cx-core');
-const { formatMoney } = require('cx-core/core/cx-core-number');
+
 
 
 
@@ -142,6 +142,8 @@ function formatValue(options) {
                 val = parseFloat(val).formatMoney(2) + '%';
             } else if (options.formatPercent === '*100') {
                 val = parseFloat(val * 100).formatMoney(2) + '%';
+            } else if (options.noFormat) {
+                val = val;
             } else {
                 val = parseFloat(val).formatMoney();
             }
