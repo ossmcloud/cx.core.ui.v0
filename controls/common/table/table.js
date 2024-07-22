@@ -21,6 +21,7 @@ class TableColumn {
     #width = '';
     #lookUps = [];
     #dataHidden = false;
+    #data = false;
     #input = null;
     #inputHidden = null;
     #fontSize = null;
@@ -50,6 +51,7 @@ class TableColumn {
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
         this.#dataHidden = options.dataHidden || null;
+        this.#data = options.data || null;
         this.#input = options.input || null;
         this.#inputHidden = options.inputHidden || null;
         this.#fontSize = options.fontSize || null;
@@ -73,6 +75,7 @@ class TableColumn {
     get title() { return this.#title; }
     get align() { return this.#align; }
     get dataHidden() { return this.#dataHidden; }
+    get data() { return this.#data; }
     get input() { return this.#input; }
     get inputHidden() { return this.#inputHidden; }
     get fontSize() { return this.#fontSize; }
@@ -264,6 +267,10 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
+            }
+
+            if (col.data) {
+                dataAttr += ` data-${col.data}="${col.value(objects[i], true)}"`;
             }
 
             var cellToolTip = '';
