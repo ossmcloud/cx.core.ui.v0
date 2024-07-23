@@ -37,6 +37,7 @@ class TableColumn {
     #toolTip = null;
     #headerToolTip = '';
     #addValues = [];
+    #sortable = null;
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -68,6 +69,7 @@ class TableColumn {
         this.#nullText = (options.nullText === undefined) ? '[NULL]' : options.nullText;
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
         this.#addTotals = options.addTotals || false;
+        this.#sortable = (options.sortable === undefined) ? true : options.sortable;
     }
 
     get name() { return this.#name; }
@@ -92,6 +94,7 @@ class TableColumn {
     get toolTip() { return this.#toolTip; }
     get headerToolTip() { return this.#headerToolTip; }
     get addValues() { return this.#addValues; }
+    get sortable() { return this.#sortable; }
 
     value(object, raw) {
         var val = object[this.name];
@@ -182,6 +185,7 @@ function renderTableHeader(objects, options, tableTotals) {
 
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
+        if (col.sortable === false) { sortableClass = ''; }
         var textAlign = ` style="text-align: ${col.align};"`;
         tHead += '<th ' + dataFieldName + sortableClass + textAlign + 'title="' + col.headerToolTip + '">';
         if (col.addTotals) {
