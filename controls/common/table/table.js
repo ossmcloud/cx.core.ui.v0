@@ -417,7 +417,7 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
                 // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
                 if (col.link.valueField) { linkValue = object[col.link.valueField]; }
                 if (linkValue) {
-                    var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
+                    var linkPlaceHolder = '{' + (col.link.paramName || col.link.valueField || col.name) + '}';
                     var linkUrl = '';
                     if (col.link.onclick) {
                         linkUrl = col.link.onclick.replace(linkPlaceHolder, linkValue);
