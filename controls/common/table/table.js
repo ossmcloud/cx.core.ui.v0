@@ -21,6 +21,7 @@ class TableColumn {
     #width = '';
     #lookUps = [];
     #dataHidden = false;
+    #data = false;
     #input = null;
     #inputHidden = null;
     #fontSize = null;
@@ -36,6 +37,7 @@ class TableColumn {
     #toolTip = null;
     #headerToolTip = '';
     #addValues = [];
+    #sortable = null;
     constructor(options) {
         if (!options) { options = {}; }
         if (options.constructor.name == 'String') {
@@ -50,6 +52,7 @@ class TableColumn {
         this.#width = options.width || 'auto';
         this.#lookUps = options.lookUps || [];
         this.#dataHidden = options.dataHidden || null;
+        this.#data = options.data || null;
         this.#input = options.input || null;
         this.#inputHidden = options.inputHidden || null;
         this.#fontSize = options.fontSize || null;
@@ -66,6 +69,7 @@ class TableColumn {
         this.#nullText = (options.nullText === undefined) ? '[NULL]' : options.nullText;
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
         this.#addTotals = options.addTotals || false;
+        this.#sortable = (options.sortable === undefined) ? true : options.sortable;
     }
 
     get name() { return this.#name; }
@@ -73,6 +77,7 @@ class TableColumn {
     get title() { return this.#title; }
     get align() { return this.#align; }
     get dataHidden() { return this.#dataHidden; }
+    get data() { return this.#data; }
     get input() { return this.#input; }
     get inputHidden() { return this.#inputHidden; }
     get fontSize() { return this.#fontSize; }
@@ -89,6 +94,7 @@ class TableColumn {
     get toolTip() { return this.#toolTip; }
     get headerToolTip() { return this.#headerToolTip; }
     get addValues() { return this.#addValues; }
+    get sortable() { return this.#sortable; }
 
     value(object, raw) {
         var val = object[this.name];
@@ -179,6 +185,7 @@ function renderTableHeader(objects, options, tableTotals) {
 
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
+        if (col.sortable === false) { sortableClass = ''; }
         var textAlign = ` style="text-align: ${col.align};"`;
         tHead += '<th ' + dataFieldName + sortableClass + textAlign + 'title="' + col.headerToolTip + '">';
         if (col.addTotals) {
@@ -264,6 +271,10 @@ function renderTableBody(objects, options, tableTotals, rowTemplate) {
             if (col.dataHidden) {
                 dataAttr += ` data-${col.dataHidden}="${col.value(objects[i], true)}"`;
                 continue;
+            }
+
+            if (col.data) {
+                dataAttr += ` data-${col.data}="${col.value(objects[i], true)}"`;
             }
 
             var cellToolTip = '';
@@ -406,7 +417,7 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
                 // @@IMPROVE: we could accept valueField as array of valueField, paramName for the url
                 if (col.link.valueField) { linkValue = object[col.link.valueField]; }
                 if (linkValue) {
-                    var linkPlaceHolder = '{' + (col.link.paramName || col.name) + '}';
+                    var linkPlaceHolder = '{' + (col.link.paramName || col.link.valueField || col.name) + '}';
                     var linkUrl = '';
                     if (col.link.onclick) {
                         linkUrl = col.link.onclick.replace(linkPlaceHolder, linkValue);
