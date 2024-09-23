@@ -191,9 +191,9 @@ function renderTableHeader(objects, options, tableTotals) {
         if (col.addTotals) {
             tableTotals[col.name] = 0;
             tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name + '}</span></span>';
-            tHead += '<span style="display: block">' + col.title + '</span>';
+            tHead += '<span class="jx-col-title" style="display: block">' + col.title + '</span>';
         } else {
-            tHead += col.title;
+            tHead += '<span class="jx-col-title" style="display: block">' + col.title + '</span>';
         }
         tHead += '</th>';
     }
