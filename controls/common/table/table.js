@@ -221,7 +221,7 @@ function renderActions(object, options) {
             var actionToolTip = (action.toolTip) ? `title="${action.toolTip}"` : '';
             var actionTarget = (action.target) ? `target="${action.target}"` : '';
             if (action.funcName) {
-                tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', ${object[options.primaryKey]} || this, event)" >${action.label}</a>`;
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', '${object[options.primaryKey]}' || this, event)" >${action.label}</a>`;
             } else if (action.func) {
                 tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" ${actionTarget} >${action.label}</a>`;
             } else if (action.link) {
