@@ -221,7 +221,10 @@ function renderActions(object, options) {
             var actionToolTip = (action.toolTip) ? `title="${action.toolTip}"` : '';
             var actionTarget = (action.target) ? `target="${action.target}"` : '';
             if (action.funcName) {
-                tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', '${object[options.primaryKey]}' || this, event)" >${action.label}</a>`;
+                var funcArgument = object[options.primaryKey];
+                if (funcArgument) { funcArgument = `'${funcArgument}'`; }
+                if (!funcArgument) { funcArgument = 'this'; }
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', ${funcArgument}, event)" >${action.label}</a>`;
             } else if (action.func) {
                 tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" ${actionTarget} >${action.label}</a>`;
             } else if (action.link) {
@@ -348,8 +351,8 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
         cellValue = `<input type="checkbox" style="margin: 0px; width: 30px;" ${checked}>`;
 
     } else if (col.input) {
-        
-        
+
+
         if (col.input.fieldName && col.input.fieldName != col.input.id) {
             // INPUT: the column has an input control but bound to different field
             col.input.id = 'cxlist_' + options.id + '_' + col.input.fieldName + '_' + ((rowTemplate) ? 'tmpl_idx' : i);
@@ -368,10 +371,10 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
         }
         col.input.name = col.input.id;
 
-      
+
         col.input.dataAttributes = null;
         col.input.data = null;
-        
+
         cellValue = _input.render(col.input);
 
 
