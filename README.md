@@ -1,5 +1,5 @@
 # cx.core.ui (general purpose HTML UI library)
-General purpose library for basic HTML UIs for Sruu cloud.
+General purpose library for basic HTML UIs for sruu cloud.
 <br />
 Basically this is a very simple rendering module.
 <br />

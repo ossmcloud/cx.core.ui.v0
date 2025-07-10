@@ -80,7 +80,7 @@ function _render(options) {
             c++;
         }
         html += '</tr>';
-        if (c > 34) { break; }
+        if (c > 41) { break; }
     }
     options.calendar = html;
     options.monthName = (_monthNames[m - 1] + ' ' + y);
