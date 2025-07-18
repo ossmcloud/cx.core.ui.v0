@@ -70,6 +70,13 @@ class TableColumn {
         this.#undefinedText = options.undefinedText || '[UNKNOWN]';
         this.#addTotals = options.addTotals || false;
         this.#sortable = (options.sortable === undefined) ? true : options.sortable;
+
+        if (!this.#type) {
+            var t = (this.#title || '').toLowerCase().split(' ');
+            if (t.indexOf('date') >= 0) {
+                this.#type = 'date';
+            }
+        }
     }
 
     get name() { return this.#name; }
@@ -183,17 +190,25 @@ function renderTableHeader(objects, options, tableTotals) {
         var col = options.columns[i];
         if (col.dataHidden || col.hide) { continue; }
 
+
+
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         if (col.sortable === false) { sortableClass = ''; }
         var textAlign = ` style="text-align: ${col.align};"`;
-        tHead += '<th ' + dataFieldName + sortableClass + textAlign + 'title="' + col.headerToolTip + '">';
-        if (col.addTotals) {
-            tableTotals[col.name] = 0;
-            tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name + '}</span></span>';
-            tHead += '<span class="jx-col-title" style="display: block">' + col.title + '</span>';
+        tHead += '<th ' + dataFieldName + sortableClass + textAlign + 'title="' + col.headerToolTip + '" data-type="' + col.type + '">';
+
+        if (col.type == 'check') {
+            tHead += `<input type="checkbox" style="margin: 0px; width: 30px;">`;
+
         } else {
-            tHead += '<span class="jx-col-title" style="display: block">' + col.title + '</span>';
+            if (col.addTotals) {
+                tableTotals[col.name] = 0;
+                tHead += '<span class="jx-col-total"><span class="jx-col-total-lbl" title="The total displayed here are relevant to the page displayed and not the overall results total">&#x1F6C8;</span><span class="jx-col-total-val">{$' + col.name + '}</span></span>';
+                tHead += '<span class="jx-col-title" style="display: block">' + col.title + '</span>';
+            } else {
+                tHead += '<span class="jx-col-title" style="display: block">' + col.title + '</span>';
+            }
         }
         tHead += '</th>';
     }
@@ -220,6 +235,9 @@ function renderActions(object, options) {
             }
             var actionToolTip = (action.toolTip) ? `title="${action.toolTip}"` : '';
             var actionTarget = (action.target) ? `target="${action.target}"` : '';
+            if (!actionTarget) {
+                if (options.linkTarget) { actionTarget = `target="${options.linkTarget}"`; }
+            }
             if (action.funcName) {
                 var funcArgument = object[options.primaryKey];
                 if (funcArgument) { funcArgument = `'${funcArgument}'`; }
@@ -414,6 +432,17 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
                 `;
             }
 
+            if (col.type == 'date') {
+                try {
+                    if (cellValue) {
+                        var str = cellValue.split('-');
+                        cellValue = str[2] + '/' + str[1] + '/' + str[0];
+                    }
+                } catch (error) {
+                    console.log(col, cellValue, error.message)
+                }
+            }
+
             // CUSTOM LINK:
             if (col.link) {
                 var linkValue = col.value(object);
@@ -540,7 +569,12 @@ function render(options, objects, input) {
     options.fixHeadClassNoBorder = (options.fixHeader === true || options.noBorder === true) ? 'jx-fixhead-noborder' : '';
     options.classTblContainer = (options.fixHeader === true) ? 'jx-table-container-fixhead' : 'jx-table-container';
     if (!options.cssTitle) { options.cssTitle = 'jx-table-title'; }
-    if (options.fixHeader) { options.cssTitle += '-fixhead'; }
+    if (options.fixHeader) {
+        options.cssTitle += '-fixhead';
+        if (!options.cssOuterStyle) {
+            options.cssOuterStyle = 'max-width: calc(100vw - 100px);'
+        }
+    }
 
     //
     if (!options.highlights) { options.highlights = []; }
