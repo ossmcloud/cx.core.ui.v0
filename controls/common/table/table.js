@@ -434,9 +434,9 @@ function formatCellValue(cellValue, options, col, objects, rowTemplate, i) {
 
             if (col.type == 'date') {
                 try {
-                    if (cellValue) {
+                    if (objects[i][col.name]) {
                         var str = cellValue.split('-');
-                        cellValue = str[2] + '/' + str[1] + '/' + str[0];
+                        cellValue = str[2].trim() + '/' + str[1].trim() + '/' + str[0].trim();
                     }
                 } catch (error) {
                     console.log(col, cellValue, error.message)
