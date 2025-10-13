@@ -49,10 +49,13 @@
                 {{{filters}}}            
                 
             </div>
+            <div id="{{id}}_filter_action_expand" class="jx-table-filter-action-container jx-table-filter-action-expand" title="expand filter panel">
+                &#x25BC;
+            </div>
             <div id="{{id}}_filter_action_container" class="jx-table-filter-action-container">
                 <span class="jx-table-csv-export" title="export to csv...">&#x2913;</span>&nbsp;&nbsp;
-                <input type="button" id="{{id}}_filter_refresh" class="btn form-inline" value="refresh" />
-                <input type="button" id="{{id}}_filter_clear" class="btn form-inline" value="clear" />
+                <input type="button" id="{{id}}_filter_refresh" class="btn" value="refresh" />
+                <input type="button" id="{{id}}_filter_clear" class="btn" value="clear" />
             </div>
         </div>
     {{/if}}
