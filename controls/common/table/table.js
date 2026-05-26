@@ -184,7 +184,7 @@ function renderTableHeader(objects, options, tableTotals) {
         tHead += `<th style="text-align: center; width: 30px;"><span style="display: none; cursor: pointer;" title="show deleted lines" id="${options.id}_undo_delete_line">&#8634;</span></th>`;
     }
     if (options.actions && options.actionsShowFirst) {
-        tHead += `<th style="text-align: center; width: 50px;">${options.actionsTitle}</th>`;
+        tHead += `<th style="text-align: center; width: ${options.actionsWidth || '50px'};">${options.actionsTitle}</th>`;
     }
     for (var i = 0; i < options.columns.length; i++) {
         var col = options.columns[i];
