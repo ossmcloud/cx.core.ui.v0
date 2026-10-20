@@ -109,13 +109,14 @@ class TableColumn {
         if (val === null) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
         if (val === undefined) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
         if (this.lookUps.length > 0) {
-            for (var lx = 0; lx < this.lookUps.length; lx++) {
-                if (this.lookUps[lx].value == val) {
-                    val = this.lookUps[lx].text;
-                    break;
+            if (!raw) {
+                for (var lx = 0; lx < this.lookUps.length; lx++) {
+                    if (this.lookUps[lx].value == val) {
+                        val = this.lookUps[lx].text;
+                        break;
+                    }
                 }
             }
-
         } else {
             if (!raw) {
                 if (val.constructor.name === 'Date') {
