@@ -21,7 +21,7 @@ function formatOptions(options) {
     if (options.fieldName == undefined && options.id != undefined) { options.fieldName = options.id; }
     if (options.name == undefined && options.fieldName != undefined) { options.name = options.fieldName; }
     if (options.id == undefined && options.fieldName != undefined) { options.id = options.fieldName; }
-       
+
     if (!options.id) { options.id = 'cx_control'; }
     if (!options.name) { options.name = options.id; }
 
@@ -93,15 +93,15 @@ function detectControlType(options, objects) {
 }
 
 function formatValue(options) {
-    
+
     if (options.type == _declarations.ControlType.DATE) {
         options.htmlType = 'date';
         if (!options.value) { return; }
         if (options.value.constructor.name === 'Date') {
             options.htmlType = (options.value.hasTime()) ? 'datetime-local' : 'date';
-            options.value = _core.date.format({ date: options.value, inverted: true, showTime: options.value.hasTime(), dateTimeSep: ' ' }); 
+            options.value = _core.date.format({ date: options.value, inverted: true, showTime: options.value.hasTime(), dateTimeSep: ' ' });
         }
-        
+
     } else if (options.type == _declarations.ControlType.CHECK) {
         options.labelCheckBox = options.label;
         options.label = null;
@@ -116,7 +116,7 @@ function formatValue(options) {
     } else if (options.type == _declarations.ControlType.TEXT || options.type == _declarations.ControlType.TEXT_AREA) {
         if (options.value && options.value.length > 100) {
             options.type = _declarations.ControlType.TEXT_AREA
-            options.rows = 7;
+            options.rows = options.rows || 7;
             //options.rows = 5;
         }
         if (options.readOnly && options.value && options.value.replaceAll) {
@@ -148,7 +148,7 @@ function formatValue(options) {
                 val = parseFloat(val).formatMoney();
             }
         } else {
-            
+
             if (options.formatMoney || options.formatPercent) {
                 var dec = 2;
                 if (options.formatMoney.constructor.name == 'String') {
@@ -156,8 +156,8 @@ function formatValue(options) {
                     if (isNaN(dec)) { dec = 2; }
                 }
                 val = parseFloat(val).toFixed(dec);
-            } 
-            
+            }
+
         }
         options.value = val;
     }
@@ -174,7 +174,7 @@ function _render(options, objects) {
     formatValue(options);
 
     if (options.html) { return options.html; }
-    
+
     if (options.type == _declarations.ControlType.CHECK) {
         options.minHeight = '50px';
     }
@@ -184,7 +184,7 @@ function _render(options, objects) {
         if (!options.options && options.lookUps) { options.options = options.lookUps; }
     }
 
-    if (options.type == _declarations.ControlType.DROPDOWN) { return _dropDown.render(options); } 
+    if (options.type == _declarations.ControlType.DROPDOWN) { return _dropDown.render(options); }
     if (options.type == _declarations.ControlType.TABLE) { return _table.render(options, options.records || objects, this); }
 
     // if (options.type == _declarations.ControlType.DATE && !options.htmlType) {

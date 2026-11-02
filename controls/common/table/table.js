@@ -109,13 +109,14 @@ class TableColumn {
         if (val === null) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#nullText + '</span>'; }
         if (val === undefined) { return (raw) ? val : '<span style="font-style: italic; color: var(--element-color-disabled)">' + this.#undefinedText + '</span>'; }
         if (this.lookUps.length > 0) {
-            for (var lx = 0; lx < this.lookUps.length; lx++) {
-                if (this.lookUps[lx].value == val) {
-                    val = this.lookUps[lx].text;
-                    break;
+            if (!raw) {
+                for (var lx = 0; lx < this.lookUps.length; lx++) {
+                    if (this.lookUps[lx].value == val) {
+                        val = this.lookUps[lx].text;
+                        break;
+                    }
                 }
             }
-
         } else {
             if (!raw) {
                 if (val.constructor.name === 'Date') {
@@ -172,6 +173,9 @@ function formatColumns(objects, options) {
         var formattedColumn = new TableColumn(column);
         if (formattedColumn.name == 'rowver' || formattedColumn.name == 'rowversion') { return; }
         formattedColumns.push(formattedColumn);
+        if (options.path && formattedColumn.name == options.primaryKey) {
+            formattedColumn.width = '30px';
+        }
     });
     options.columns = formattedColumns;
 }
@@ -190,12 +194,11 @@ function renderTableHeader(objects, options, tableTotals) {
         var col = options.columns[i];
         if (col.dataHidden || col.hide) { continue; }
 
-
-
         var dataFieldName = `data-field-name="${col.name}"`;
         var sortableClass = (options.sortable) ? ' class="cx_sortable"' : '';
         if (col.sortable === false) { sortableClass = ''; }
-        var textAlign = ` style="text-align: ${col.align};"`;
+        var widthStyle = col.width == 'auto' ? '' : `width: ${col.width};`;
+        var textAlign = ` style="text-align: ${col.align}; ${widthStyle}"`;
         tHead += '<th ' + dataFieldName + sortableClass + textAlign + 'title="' + col.headerToolTip + '" data-type="' + col.type + '">';
 
         if (col.type == 'check') {
@@ -243,6 +246,9 @@ function renderActions(object, options) {
                 if (funcArgument) { funcArgument = `'${funcArgument}'`; }
                 if (!funcArgument) { funcArgument = 'this'; }
                 tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${action.funcName}', ${funcArgument}, event)" >${action.label}</a>`;
+            } else if (action.funcExec) {
+                var funcDetails = action.funcExec(object);
+                tBody += `<a class="jx-table-action" ${actionToolTip} href="#" onclick="cx.clientExec('${funcDetails.funcName}', ${funcDetails.funcArgument}, event)" >${action.label}</a>`;
             } else if (action.func) {
                 tBody += `<a class="jx-table-action" ${actionToolTip} href="${action.func(object)}" ${actionTarget} >${action.label}</a>`;
             } else if (action.link) {
